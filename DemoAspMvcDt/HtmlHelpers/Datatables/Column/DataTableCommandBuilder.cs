@@ -154,7 +154,13 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
             _jObject.Add("data", new JRaw("null"));
             _jObject.Add("orderable", new JValue(false));
             _jObject.Add("className", new JValue("dt-command"));
-            _jObject.Add("render", new JRaw($@"function ( data, type, row, meta ){{ return '<i class=""dt-edit-command far fa-edit"" data-row-index='+meta.row+'></i>';}}"));
+            _jObject.Add("render", new JRaw($@"function ( data, type, row, meta ){{
+    if(row.isDirty){{
+console.log('row.tdUid: '+row.tdUid);
+    return '<i class=""dt-cancel-edit-command fas fa-undo-alt"" data-row-index='+meta.row+' data-td-uid='+row.td_uid+'></i>';
+    }}
+        return '<i class=""dt-edit-command far fa-edit"" data-row-index='+meta.row+'></i>';
+    }}"));
         }
 
         public override JToken ToJToken()

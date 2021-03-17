@@ -177,7 +177,34 @@
 
         this.resetLigne();
 
-        this.dtApi.draw(false).rows().invalidate();
+       // this.dtApi.draw(false).rows().invalidate();
+        return this;
+    }
+
+    reinitLigne(anciennesDonnees) {
+
+        if (this.ligneSelectionnee === undefined || this.ligneSelectionnee === null) {
+            throw 'Il faut sélectionner une ligne d\'abord.';
+        }
+        if (anciennesDonnees === undefined || anciennesDonnees === null) {
+            throw 'Il faut fournir des données valides pour reinitialiser la ligne.';
+        }
+
+        let dateFormat = this.jQTableElement.attr('default_date_time_format');        
+        DtDatesHelper.dtConvertDates(anciennesDonnees, dateFormat);
+
+        this.reinitCellulesModifiees(anciennesDonnees);
+
+        if (this.dispatchRowUpdatingEvent(anciennesDonnees) === false) {
+            return this;
+        }
+        this.ligneSelectionnee.data(anciennesDonnees);
+
+        this.dispatchRowUpdatedEvent(anciennesDonnees)
+
+        this.resetLigne();
+
+       // this.dtApi.draw(false).rows().invalidate();
         return this;
     }
 
@@ -190,12 +217,30 @@
 
             if (nouvellesDonnees[cName] !== undefined
                 && this.donneesLigneSelectionnee[cName] !== undefined
-                && nouvellesDonnees[cName] !== this.donneesLigneSelectionnee[cName]) {//la valeurà changé
+                && (nouvellesDonnees[cName]).toString() != (this.donneesLigneSelectionnee[cName]).toString()) {//la valeurà changé
 
                 var cell = this.dtApi.cells(this.ligneSelectionneeIndex, cIndex); // cell ayant une nouvelle valeur
                 $(cell.nodes()).addClass('dt-dirty');
 
                 nouvellesDonnees.isDirty = true;
+            }
+        }
+    }
+
+    reinitCellulesModifiees(anciennesDonnees) {
+
+
+        for (var i = 0; i < this.dtColumns.length; i++) {
+            let cName = this.dtColumns[i].name;
+            let cIndex = this.dtApi.column(cName + ':name').index();
+
+            if (anciennesDonnees[cName] !== undefined
+                && this.donneesLigneSelectionnee[cName] !== undefined) {
+
+                var cell = this.dtApi.cells(this.ligneSelectionneeIndex, cIndex);
+                $(cell.nodes()).removeClass('dt-dirty');
+
+                anciennesDonnees.isDirty = undefined;
             }
         }
     }

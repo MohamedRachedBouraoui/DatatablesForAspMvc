@@ -49,13 +49,16 @@
                   @Model.DtApiInstanceName = new DtApi(rawTableName);
                     }
 
-            // data setup for form-Submit 
+            // data setup for form-Submit
             if (dtModel.IsUsedInForm) {
 
                 DtFormHelper.setupForm(dtModel, closestDiv, dtTable, _jQueryTable);
             }
 
             DtEventsHelper.setupEvents(dtModel, dtTable);
-        });
+
+
+        });//JS block-End
+
     })();
 </script>
