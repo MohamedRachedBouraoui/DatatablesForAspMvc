@@ -3,7 +3,10 @@ using DemoAspMvcDt.HtmlHelpers.Datatables.Table;
 using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.IO;
 using System.Linq;
+using System.Web;
 
 namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
 {
@@ -43,23 +46,23 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
             string jsMified = new Minifier().MinifyJavaScript(html);
 
             //return html;
-            return $"<script>{html}</script>";
+           // return $"<div id='div__dt__{TableName}'><script>{html}</script></div>";
+            //var result= $"<div id='div__dt__{TableName}'><script>{jsMified}</script></div>";
             //return $"<script>{jsMified}</script>";
 
 
             //create a script file on the server and Return an script tag 
-            //string jsPath = $"Scripts/{TableName}.js";
-            //FileInfo jsFileInfo = new FileInfo(HttpContext.Current.Server.MapPath($"~/{jsPath}"));
+            string jsPath = $"Scripts/{TableName}.js";
+            FileInfo jsFileInfo = new FileInfo(HttpContext.Current.Server.MapPath($"~/{jsPath}"));
 
 
-            //using (StreamWriter sw = new StreamWriter(jsFileInfo.FullName))
-            //{
-            //    sw.WriteLine(html); // Write the file.
-            //    //sw.WriteLine(jsMified); // Write the file.
-            //}
-            ////TODO: think of reusing same file if not modified
-            //var result = $"<script src='{jsPath}?v={DateTime.Now.Ticks}'></script>";//Use ?v toget latest version
-            //return result;
+            using (StreamWriter sw = new StreamWriter(jsFileInfo.FullName))
+            {
+                sw.WriteLine(jsMified); // Write the file.
+            }
+            //TODO: think of reusing same file if not modified
+            var result = $"<div id='div__dt__{TableName}'><script src='{jsPath}?v={DateTime.Now.Ticks}'></script></div>";//Use ?v toget latest version
+            return result;
         }
         internal static DtModel InitInstance<T>(DataTableBuilder<T> dtBuilder) where T : class
         {

@@ -4,26 +4,31 @@
     var dtModel = @Html.Raw(Json.Encode(Model));
 
 
-    if ($('#'+dtModel.TableName).length > 0 ) {
-        if ($('#'+dtModel.TableName).is('table') === false) {//The tale_name is already used but not as a table
-            throw dtModel.TableName+" is not a table";
-        }
-        else {
-            $("#" + dtModel.TableName).attr('default_date_time_format',dtModel.TableDefaultDatesFormat);// add default dates format as an attribute
-        }
-    }
-
-    if ($('#' + dtModel.TableName).length === 0) {//A table with table_name as id is already set in the DOM
-        document.write("<table id='" + dtModel.TableName + "' class='display " + dtModel.TableClassName + "' width='100%' default_date_time_format='" + dtModel.TableDefaultDatesFormat+"'></table>");
-    }
-
     module_@Model.TableName = (function () {
         $(function () {
 
+            var rawTableName = dtModel.TableName;
+            var _jQueryTable = $("#" + rawTableName);
+            var closestDiv = document.getElementById(`div__dt__${rawTableName}`); //This div is added in DtModel.cs --> ToString()
 
-                    var rawTableName =dtModel.TableName;
+            if (_jQueryTable.length > 0) {//A table with table_name as id is already set in the DOM
+                if (_jQueryTable.is('table') === false) {//The tale_name is already used but not as a table
+                    throw rawTableName + " is not a table";
+                }
+                else {
+                    _jQueryTable.attr('default_date_time_format', dtModel.TableDefaultDatesFormat);// add default dates format as an attribute
+                }
+            }else {//Will create the table element
 
-                    var _jQueryTable = $("#" + rawTableName);
+                let tbElement = document.createElement('table');
+                tbElement.setAttribute('default_date_time_format', dtModel.TableDefaultDatesFormat);
+                tbElement.setAttribute('width', '100%');
+                tbElement.setAttribute('class', 'display ' + dtModel.TableClassName);
+                tbElement.setAttribute('id', dtModel.TableName);
+                closestDiv.appendChild(tbElement);
+
+                _jQueryTable = $("#" + rawTableName);
+            }
 
             @if (Model.HasEditRowCommand)
             {
@@ -34,7 +39,7 @@
 
             if (dtModel.IsUsedInForm)
                     {
-                _jQueryTable.append("<input type='hidden' id='" + dtModel.IdOfHiddenInputHoldingTableData + "' " + dtModel.NameAttributeForHiddenInputHoldingTableData + "/>");
+                $(closestDiv).append("<input type='hidden' id='" + dtModel.IdOfHiddenInputHoldingTableData + "' " + dtModel.NameAttributeForHiddenInputHoldingTableData + "/>");
                     }
 
                     // if true then the "ajax" call will not trigger on first time: See the "ajax" settings for the Datatable in the "dtCustomConfig" object
@@ -208,7 +213,7 @@
                     })
                         .then((result) => {
                             if (result.isConfirmed) {
-                                alert(JSON.stringify(result.value));
+                               // alert(JSON.stringify(result.value));
                                 updateRow(rowIndex, result.value);
                             }
                         });
