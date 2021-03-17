@@ -58,7 +58,8 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
 
             using (StreamWriter sw = new StreamWriter(jsFileInfo.FullName))
             {
-                sw.WriteLine(jsMified); // Write the file.
+                sw.WriteLine(html); // Write the file.
+                //sw.WriteLine(jsMified); // Write the file.
             }
             //TODO: think of reusing same file if not modified
             var result = $"<div id='div__dt__{TableName}'><script src='{jsPath}?v={DateTime.Now.Ticks}'></script></div>";//Use ?v toget latest version

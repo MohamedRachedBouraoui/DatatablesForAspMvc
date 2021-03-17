@@ -26,8 +26,8 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Table
 
         public DataTableBuilder(string name)
         {
-            this.DTableOptions = new DTableOptions<T>();
-            this.TableName = name;
+            DTableOptions = new DTableOptions<T>();
+            TableName = name;
         }
 
         #region output
@@ -65,15 +65,15 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Table
 
         public DataTableBuilder<T> DataSource(Action<DataTableDataSourceBuilder> config)
         {
-            this.DataTableDataSourceBuilder = new DataTableDataSourceBuilder();
-            config(this.DataTableDataSourceBuilder);
+            DataTableDataSourceBuilder = new DataTableDataSourceBuilder(TableName);
+            config(DataTableDataSourceBuilder);
 
             return this;
         }
         public DataTableBuilder<T> Buttons(Action<DataTableButtonsFactory> config)
         {
-            this.DataTableButtonsFactory = new DataTableButtonsFactory();
-            config(this.DataTableButtonsFactory);
+            DataTableButtonsFactory = new DataTableButtonsFactory();
+            config(DataTableButtonsFactory);
 
             return this;
         }

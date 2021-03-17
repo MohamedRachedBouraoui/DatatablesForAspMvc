@@ -8,20 +8,23 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.DataSource
     /// </summary>
     public class AjaxBuilder : IJToken
     {
+        private readonly string tableName;
+
         public JObject jObject { get; set; }
         public bool IsDtAjaxLoadingDefferd { get; internal set; }
 
         /// <summary>
         /// Initialize a new instance of <see cref="AjaxBuilder"/>
         /// </summary>
-        public AjaxBuilder(string url)
+        public AjaxBuilder(string url, string tableName)
         {
             jObject = new JObject()
-            {
+            {                
                 { "url", new JValue(url) },
                 { "method", new JValue("POST")},
-                { "success", new JRaw($"function(data){{ dt_convertDates(data); callback(data);}}") }
+                { "success", new JRaw($"function(data){{DtDatesHelper.dtConvertDates(data,$('#{tableName}').attr('default_date_time_format')); callback(data);}}") }
         };
+            this.tableName = tableName;
         }
 
         /// <summary>
@@ -79,7 +82,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.DataSource
         public AjaxBuilder WhenRequestSucceedThenInvoke(string onSuccessFumctionFunc)
         {
             jObject.Remove("success");
-            jObject.Add("success", new JRaw($"function(data){{dt_convertDates(data); callback(data);{onSuccessFumctionFunc}(data);}}"));
+            jObject.Add("success", new JRaw($"function(data){{DtDatesHelper.dtConvertDates(data,$('#{tableName}').attr('default_date_time_format')); callback(data);{onSuccessFumctionFunc}(data);}}"));
             return this;
         }
 

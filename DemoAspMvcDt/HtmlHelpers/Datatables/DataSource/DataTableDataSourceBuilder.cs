@@ -10,6 +10,13 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.DataSource
     /// </summary>
     public class DataTableDataSourceBuilder : IJToken
     {
+        private string tableName;
+
+        public DataTableDataSourceBuilder(string tableName)
+        {
+            this.tableName = tableName;
+        }
+
         public IEnumerable<object> Items { get; private set; }
         public bool IsUsedInForm { get; private set; }
         public bool SubmitWithMultiHiddenInputs { get; private set; }
@@ -27,7 +34,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.DataSource
         public AjaxBuilder HandleDataByAjax(string url)
         {
             //Items = null;
-            this.AjaxBuilder = new AjaxBuilder(url);
+            this.AjaxBuilder = new AjaxBuilder(url, tableName);
             return this.AjaxBuilder;
         }
 
