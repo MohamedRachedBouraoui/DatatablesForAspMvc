@@ -1,0 +1,32 @@
+﻿
+button.btn.dt_excel_btn::before {
+    font-family: fontAwesome;
+    content: "\f1c3\00a0";
+}
+
+button.btn.dt_pdf_btn::before {
+    font-family: fontAwesome;
+    content: "\f1c1\00a0";
+}
+
+.dt-popup-edit-swal-actions .swal2-confirm .swal2-cancel{
+    width:50%;
+}
+
+
+.dt-dirty {
+    position: relative;
+}
+
+    .dt-dirty:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        display: block;
+        border-left: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-top: 20px solid orange;
+    }

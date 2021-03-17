@@ -1,8 +1,5 @@
 ﻿class DtApi {
 
-    dt_convertDates(data) {
-
-    }
     constructor(tableId) {
         this.tableId = tableId;
         this.jQTableElement = $("#" + tableId);
@@ -99,8 +96,8 @@
             throw 'Il faut fournir les données pour la nouvelle ligne.';
         }
 
-
-        this.convertirDates(ligne);
+        let dateFormat = this.jQTableElement.attr('default_date_time_format');
+        DtDatesHelper.dtConvertDates(ligne, dateFormat );
 
         if (this.dispatchRowAddingEvent(ligne) === false) {
             return this;
@@ -156,22 +153,6 @@
         return this;
     }
 
-    convertirDates(data) {
-        let dateFormat = this.jQTableElement.attr('default_date_time_format');
-        for (var _prop in data) {
-
-            let dataVal = data[_prop];
-            if (dataVal !== null && typeof (dataVal) == "object") {
-                dt_convertDates(dataVal);
-            } else {
-                if (dataVal != null && dataVal.toString().indexOf('/Date\(') > -1) {// Convert /Date(ticks)/
-
-                    var m = window.moment.utc(data[_prop]);
-                    data[_prop] = m.locale('fr-ca').format(dateFormat);
-                }
-            }
-        }
-    }
 
     modifierLigne(nouvellesDonnees) {
 
@@ -182,7 +163,9 @@
             throw 'Il faut fournir des données valides pour modifier la ligne.';
         }
 
-        this.convertirDates(nouvellesDonnees);
+        let dateFormat = this.jQTableElement.attr('default_date_time_format');        
+        DtDatesHelper.dtConvertDates(nouvellesDonnees, dateFormat);
+
         this.mettreAAjourCellulesModifiees(nouvellesDonnees);
 
         if (this.dispatchRowUpdatingEvent(nouvellesDonnees) === false) {
