@@ -1,153 +1,125 @@
 ﻿@model DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension.DtModel
 <script>
 
-    if ($('#@Model.TableName').length > 0 ) {
-        if ($('#@Model.TableName').is('table') === false) {//The tale_name is already used but not as a table
-            throw "@Model.TableName is not a table";
+    var dtModel = @Html.Raw(Json.Encode(Model));
+
+
+    if ($('#'+dtModel.TableName).length > 0 ) {
+        if ($('#'+dtModel.TableName).is('table') === false) {//The tale_name is already used but not as a table
+            throw dtModel.TableName+" is not a table";
         }
         else {
-            $("#" + '@Model.TableName').attr('default_date_time_format','@Model.TableDefaultDatesFormat');// add default dates format as an attribute
+            $("#" + dtModel.TableName).attr('default_date_time_format',dtModel.TableDefaultDatesFormat);// add default dates format as an attribute
         }
     }
 
-    if ($('#@Model.TableName').length === 0) {//A table with table_name as id is already set in the DOM
-    document.write("@Html.Raw("<table id='"+@Model.TableName+"' class='display "+Model.TableClassName+ "' width='100%' default_date_time_format='" + Model.TableDefaultDatesFormat+"'></table>")");
+    if ($('#' + dtModel.TableName).length === 0) {//A table with table_name as id is already set in the DOM
+        document.write("<table id='" + dtModel.TableName + "' class='display " + dtModel.TableClassName + "' width='100%' default_date_time_format='" + dtModel.TableDefaultDatesFormat+"'></table>");
     }
 
     module_@Model.TableName = (function () {
         $(function () {
 
 
-                    var rawTableName ='@Model.TableName';
+                    var rawTableName =dtModel.TableName;
 
                     var _jQueryTable = $("#" + rawTableName);
 
- @if (Model.HasEditRowCommand)
+            @if (Model.HasEditRowCommand)
             {
-            <text>
-            _jQueryTable.on('draw.dt', function () {
-                console.log('draw.dt ....');
-                setEditCmd();
-            });
-             </text>
+                <text>
+            _jQueryTable.on('draw.dt', function () { setEditCmd(); });
+                </text>
             }
 
-        @if (Model.IsUsedInForm)
+            if (dtModel.IsUsedInForm)
                     {
-                        <text>
-                        _jQueryTable.append("@Html.Raw("<input type='hidden' id='"+Model.IdOfHiddenInputHoldingTableData+"' "+Model.NameAttributeForHiddenInputHoldingTableData + "/>")");
-
-                        </text>
+                _jQueryTable.append("<input type='hidden' id='" + dtModel.IdOfHiddenInputHoldingTableData + "' " + dtModel.NameAttributeForHiddenInputHoldingTableData + "/>");
                     }
 
                     // if true then the "ajax" call will not trigger on first time: See the "ajax" settings for the Datatable in the "dtCustomConfig" object
                     // NB: Must be placed here (just before the "dtCustomConfig")
-                    var _isDtAjaxLoadingDefferd  = @Model.IsDtAjaxLoadingDefferd;
+                    // Used in 'DtModel.cd --> InitDataTableConfig --> Ajax config'
+                    var _isDtAjaxLoadingDefferd  =dtModel.IsDtAjaxLoadingDefferd;
 
-                    var dtCustomConfig =@Html.Raw(Model.CustomConfigValues)
+                     var dtCustomConfig =@Html.Raw(Model.CustomConfigValues);
 
 
                      //Will merge custom and default settings for the datatable: in this case, default settings will be overwritten by custom ones having same name
                      // To inverse the logic, do this instead: dtCustomConfig = $.extend({},dtCustomConfig, Model.defaultDtConfigValue());
-                 @if(Model.HasDefaultSettings)
+            if (dtModel.HasDefaultSettings)
                     {
-                        <text>
-
                         dtCustomConfig = $.extend({}, @Model.DefaultConfigValues (), dtCustomConfig);
-
-                        </text>
                     }
 
 
                     var dtTable  = _jQueryTable .DataTable(dtCustomConfig);//Init dataTable
 
-                    @if (Model.DoCreateDtApiInstance) //Create an instance for the DtApi
+            if (dtModel.DoCreateDtApiInstance) //Create an instance for the DtApi
                     {
-                        <text>
                             @Model.DtApiInstanceName = new DtApi(rawTableName); // will be a global variable
-                        </text>
                     }
 
-
-
-                @if (Model.IsUsedInForm)
+            if (dtModel.IsUsedInForm)
                     {
-                        <text>
 
-                            @if (string.IsNullOrEmpty(Model.FormId) == false)
-                            {
-                                    <text>
-                                    var form = $('#@Model.FormId');
-                                    </text>
+                if (dtModel.FormId != '')
+                {
+                    var form = $('#' + dtModel.FormId);
                             }
                             else {
-                            <text>
                                 var form = _jQueryTable.closest('form') ;
-                            </text>
                             }
 
 
                 form.on('submit', function (e) {
 
                                                var dataToSubmit =dtTable.rows().data().toArray();
-                                           @if (Model.IsSubmitOnlyNewAndModifiedRows)
+                    if (dtModel.IsSubmitOnlyNewAndModifiedRows)
                                            {
-                                            <text>
                                            dataToSubmit = dataToSubmit.filter(function (data) { { return data.isDirty === true; } });
-                                            </text>
+
                                            }
 
 
-                                    @if (Model.SubmitWithMultiHiddenInputs){
+                    if (dtModel.SubmitWithMultiHiddenInputs){
                                     //Will create as many hidden inputs as data length and inject them into the "hiddenTableData" DIV
 
-                                                <text>
                                                     var hiddenInputs = '';
                                         for (var i = 0; i < dataToSubmit.length; i++) {
-                                            var _data = dataToSubmit[i];
-                                                for (const property in _data) {
-                                                        var hiddenInputName = "@Model.PrefixForMultiHiddenInputs" + "[" + i + "]." + property;
-                                                    var hiddenInputValue = _data[property];
-
-                                                    //if (hiddenInputValue != null && hiddenInputValue !== undefined && hiddenInputValue.toString().indexOf('/Date\(') != -1) { // Convert /Date(ticks)/ to datetime
-                                                    //    hiddenInputValue = moment(hiddenInputValue).format();
-                                                    //}
-                                                    hiddenInputs += "<input name='" + hiddenInputName + "' type='hidden' value='" + hiddenInputValue + "' />";
-                                                }
-                                     }
-
-                                                $('#@Model.IdOfHiddenInputHoldingTableData').html(hiddenInputs);
-                                                 </text>
+                                                var _data = dataToSubmit[i];
+                                                    for (const property in _data) {
+                                                            var hiddenInputName = dtModel.PrefixForMultiHiddenInputs + "[" + i + "]." + property;
+                                                        var hiddenInputValue = _data[property];
+                                                        hiddenInputs += "<input name='" + hiddenInputName + "' type='hidden' value='" + hiddenInputValue + "' />";
+                                                    }
+                                            }
+                                                $('#'+dtModel.IdOfHiddenInputHoldingTableData).html(hiddenInputs);
                                     }
                                     else
                                     {
                                     // Will inject data into the "hiddenTableData" DIV  as a JSON string
 
-                                            <text>
-                                            $('#@Model.IdOfHiddenInputHoldingTableData').val(JSON.stringify(dtTable .rows().data().toArray()));
-                                            </text>
+                                            $('#'+dtModel.IdOfHiddenInputHoldingTableData).val(JSON.stringify(dtTable .rows().data().toArray()));
                                         }
                             });
-                        </text>
                     }
 
 
             // For events like "OnAddingRow","OnDeletingRow"
-                @Html.Raw(Model.NativeEvents)
+               dtModel.NativeEvents
 
-             @if (Model.HasCheckBoxColumn)
+            if (dtModel.HasCheckBoxColumn)
                     {
             // If a button in a Cell is clicked the we need to "preventDefault" the "user-select" event to prevent accidently selecting/deselecting the row
-                        <text>
                             dtTable.on('user-select', function (e, dt, type, cell, originalEvent) { if ($(originalEvent.currentTarget).hasClass('dt-command')) { e.preventDefault(); } });
-                        </text>
+
                     }
 
-                    @if (Model.HasClickEvents)
+            if (dtModel.HasClickEvents)
                     {
-                        <text>
 
-                            var fn = [@Model.ClickEvents];
+                var fn = [dtModel.ClickEvents];
 
                             _jQueryTable .on('click', 'button', function () {
 
@@ -164,7 +136,6 @@
                                            PrefixForMultiHiddenInputsrefixForMultiHiddenInputsfixForMultiHiddenInputsfixForMultiHiddenInputsfixForMultiHiddenInputs              }
                                 ModePrefixForMultiHiddenInputsPrefixForMultiHiddenInputsfixForMultiHiddenInputsfixForMultiHiddenInputs
                             });
-                        </text>
                     }
 
 
@@ -187,105 +158,106 @@
 
 		 //Edit Column
 
-		  @if (Model.HasEditRowCommand)
+            @if (Model.HasEditRowCommand)
             {
-            <text>
-        function setEditCmd() {
-            let popupTitle = '@Model.EditPopupTitle';
+        <text>
+            function setEditCmd() {
+                let popupTitle = dtModel.EditPopupTitle;
 
-            //TODO: problem with events after deleting items
-            _jQueryTable.find('.dt-edit-command').bind('click',function (e) {
+                //TODO: problem with events after deleting items
+                _jQueryTable.find('.dt-edit-command').bind('click', function (e) {
 
-                let rowIndex = $(e.target).data('row-index');
-                let dt_api = new DtApi(rawTableName);
-                let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
-                let html = buildHtmlForEdition(rowOldData);
-                Swal.fire({
-                    title: `<strong>${popupTitle}</strong>`,
-                    icon: 'info',
-                    html: '<form class="dt-edit-form" style="text-align:left;">' + html.join('') + '</form>',
-                    //focusConfirm: false,
-                    className: "dt-popup-edit-swal-actions",
-                    showCloseButton: true,
-                    showCancelButton: true,
-                    focusConfirm: false,
-                    confirmButtonText:
-                        '<i class="fa fa-thumbs-up"></i> Save',
-                    //confirmButtonAriaLabel: 'Thumbs up, great!',
-                    cancelButtonText:
-                        '<i class="fa fa-thumbs-down"> Cancel</i>',
-                    //cancelButtonAriaLabel: 'Thumbs down',
-                    preConfirm: () => {
+                    let rowIndex = $(e.target).data('row-index');
+                    let dt_api = new DtApi(rawTableName);
+                    let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
+                    let html = buildHtmlForEdition(rowOldData);
+                    Swal.fire({
+                        title: `<strong>${popupTitle}</strong>`,
+                        icon: 'info',
+                        html: '<form class="dt-edit-form" style="text-align:left;">' + html.join('') + '</form>',
+                        //focusConfirm: false,
+                        className: "dt-popup-edit-swal-actions",
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                            '<i class="fa fa-thumbs-up"></i> Save',
+                        //confirmButtonAriaLabel: 'Thumbs up, great!',
+                        cancelButtonText:
+                            '<i class="fa fa-thumbs-down"> Cancel</i>',
+                        //cancelButtonAriaLabel: 'Thumbs down',
+                        preConfirm: () => {
 
-                        let form = $('.dt-edit-form');
-                        $.validator.unobtrusive.parse(form);
-                        if (form.valid()==false) {
-                            return false;
+                            let form = $('.dt-edit-form');
+                            $.validator.unobtrusive.parse(form);
+                            if (form.valid() == false) {
+                                return false;
+                            }
+                            let result = {};
+                            form.submit(function (event) {
+                                event.preventDefault();
+                                const data = new FormData(event.target);
+
+                                result = Object.fromEntries(data.entries());
+                            });
+
+                            form.submit();
+
+                            return result;
                         }
-                        let result = {};
-                        form.submit(function (event) {
-                            event.preventDefault();
-                            const data = new FormData(event.target);
-
-                            result = Object.fromEntries(data.entries());
+                    })
+                        .then((result) => {
+                            if (result.isConfirmed) {
+                                alert(JSON.stringify(result.value));
+                                updateRow(rowIndex, result.value);
+                            }
                         });
+                });
+            }
+            function buildHtmlForEdition(rowOldData) {
 
-                        form.submit();
+                var all_columns = dtTable.settings().init().columns;
 
-                        return result;
-                    }
-                })
-                    .then((result) => {
-                        if (result.isConfirmed) {
-                            alert(JSON.stringify(result.value));
-                            updateRow(rowIndex, result.value);
-                        }
-                    });
-            });
-        }
-        function buildHtmlForEdition(rowOldData) {
+                var inputs = [];
+                for (var i in all_columns) {
+                    let col_name = all_columns[i].name;
+                    let col = dtTable.column(col_name + ':name');
 
-            var all_columns = dtTable.settings().init().columns;
+                    if (col.dataSrc() != undefined) {
+                        if (col.visible()) { //Proceed visible columns
+                            if (all_columns[i].type === 'bool') {//For checkboxes
 
-            var inputs = [];
-            for (var i in all_columns) {
-                let col_name = all_columns[i].name;
-                let col = dtTable.column(col_name + ':name');
+                                let isCheck = rowOldData[col_name] === true ? 'checked="checked"' : '';
 
-                if (col.dataSrc() != undefined) {
-                    if (col.visible()) { //Proceed visible columns
-                        if (all_columns[i].type === 'bool') {//For checkboxes
-
-                            let isCheck = rowOldData[col_name] === true ? 'checked="checked"' : '';
-
-                            inputs.push(` <div class="form-check mb-3">
+                                inputs.push(` <div class="form-check mb-3">
     <input type="hidden" name="${col_name}" value="false">
     <input type="checkbox" class="form-check-input" name="${col_name}" id="${col_name}"  ${isCheck} value='true'>
     <label class="form-check-label" for="${col_name}" style="font-weight: bold;">${$(col.header()).html()}</label>
 </div>`);
-                        } else {
+                            } else {
 
-                            inputs.push(` <div class="form-group">
+                                inputs.push(` <div class="form-group">
     <label for="${col_name}" style="font-weight: bold;">${$(col.header()).html()}</label>
     <input type="${all_columns[i].type}" class="form-control" name="${col_name}" value="${rowOldData[col_name]}" data-val="true" data-val-required="Le champ Name est requis.">
     <span class="field-validation-valid text-danger" data-valmsg-for="${col_name}" data-valmsg-replace="true"></span>
   </div>`);
+                            }
+                        }
+                        else { ////Proceed hidden columns using hidden inputs
+                            inputs.push(`<input type="hidden" name="${col_name}" value="${rowOldData[col_name]}">`)
                         }
                     }
-                    else { ////Proceed hidden columns using hidden inputs
-                        inputs.push(`<input type="hidden" name="${col_name}" value="${rowOldData[col_name]}">`)
-                    }
                 }
+                return inputs;
             }
-            return inputs;
-        }
             function updateRow(rowIndex, values) {
                 let dt_api = new DtApi(rawTableName);
                 let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
                 dt_api.modifierLigne(values);
 
-        }
-             </text>
+            }
+        </text>
+
             }
         });
     })();
