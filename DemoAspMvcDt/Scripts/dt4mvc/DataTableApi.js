@@ -177,7 +177,7 @@
 
         this.resetLigne();
 
-        //this.dtApi.draw(false).rows().invalidate();
+        this.dtApi.draw(false).rows().invalidate();
         return this;
     }
 

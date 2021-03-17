@@ -1,11 +1,11 @@
 ﻿@model DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension.DtModel
 <script>
 
-    let dtModel = @Html.Raw(Json.Encode(Model));
-
-
     module_@Model.TableName = (function () {
+
         $(function () {
+
+            let dtModel = @Html.Raw(Json.Encode(Model));
 
             let rawTableName = dtModel.TableName;
 
@@ -14,15 +14,13 @@
             let _jQueryTable = DtTableHtmlHelper.createTable(dtModel, closestDiv);
 
 
-                         //Edit Column
+             //Edit Column: must be setup before datatable creation to catch the draw event
             @if (Model.HasEditRowCommand)
             {
                 <text>
             _jQueryTable.on('draw.dt', function () { DtEditCmd.setEditCmd(dtModel, _jQueryTable, rawTableName); });
                 </text>
             }
-
-
 
 
                     // if true then the "ajax" call will not trigger on first time: See the "ajax" settings for the Datatable in the "dtCustomConfig" object
@@ -33,32 +31,31 @@
                      let dtCustomConfig =@Html.Raw(Model.CustomConfigValues);
 
 
-                     //Will merge custom and default settings for the datatable: in this case, default settings will be overwritten by custom ones having same name
+                     //Will merge custom and default settings for the datatable:
+                      //in this case, default settings will be overwritten by custom ones having same name
                      // To inverse the logic, do this instead: dtCustomConfig = $.extend({},dtCustomConfig, Model.defaultDtConfigValue());
-            if (dtModel.HasDefaultSettings)
-                    {
+            if (dtModel.HasDefaultSettings) {
+
                         dtCustomConfig = $.extend({}, @Model.DefaultConfigValues (), dtCustomConfig);
                     }
 
+                    //Init dataTable
+                    let dtTable  = _jQueryTable .DataTable(dtCustomConfig);
 
-                    let dtTable  = _jQueryTable .DataTable(dtCustomConfig);//Init dataTable
+            //Create an instance for the DtApi
+            if (dtModel.DoCreateDtApiInstance) {
 
-            if (dtModel.DoCreateDtApiInstance) //Create an instance for the DtApi
-                    {
-                            @Model.DtApiInstanceName = new DtApi(rawTableName); // will be a global variable
+                 // will be a global variable
+                  @Model.DtApiInstanceName = new DtApi(rawTableName);
                     }
 
-            if (dtModel.IsUsedInForm)
-                    {
+            // data setup for form-Submit 
+            if (dtModel.IsUsedInForm) {
+
                 DtFormHelper.setupForm(dtModel, closestDiv, dtTable, _jQueryTable);
-
-                    }
-
-
-
+            }
 
             DtEventsHelper.setupEvents(dtModel, dtTable);
-
         });
     })();
 </script>

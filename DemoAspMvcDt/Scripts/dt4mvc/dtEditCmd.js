@@ -2,9 +2,10 @@
 
     function setEditCmd(dtModel, _jQueryTable, rawTableName ) {
         let popupTitle = dtModel.EditPopupTitle;
-
-        //TODO: problem with events after deleting items
-        _jQueryTable.find('.dt-edit-command').bind('click', function (e) {
+       
+        //The problem is that .click() only works for elements that already existed when the page loaded. 
+        _jQueryTable.find('.dt-edit-command').off();
+        _jQueryTable.on('click','.dt-edit-command',function (e) {
 
             let rowIndex = $(e.target).data('row-index');
             let dt_api = new DtApi(rawTableName);
@@ -21,10 +22,8 @@
                 focusConfirm: false,
                 confirmButtonText:
                     '<i class="fa fa-thumbs-up"></i> Save',
-                //confirmButtonAriaLabel: 'Thumbs up, great!',
                 cancelButtonText:
                     '<i class="fa fa-thumbs-down"> Cancel</i>',
-                //cancelButtonAriaLabel: 'Thumbs down',
                 preConfirm: () => {
 
                     let form = $('.dt-edit-form');
@@ -44,8 +43,7 @@
 
                     return result;
                 }
-            })
-                .then((result) => {
+            }) .then((result) => {
                     if (result.isConfirmed) {
                         // alert(JSON.stringify(result.value));
                         updateRow(rawTableName,rowIndex, result.value);
