@@ -1,0 +1,322 @@
+﻿@model DemoAspMvcDt.Models.CountryVm
+
+@*@using (Html.BeginForm("AddPerson", "Home", FormMethod.Post, new { id = "add_person_form" }))
+    {
+            <input type="hidden" name="Identifiant" value="0" />
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="Name">Name</label>
+                    <input type="text" class="form-control" name="Name" />
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="Age">Age</label>
+                    <input type="number" class="form-control" name="Age" />
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="Age">DOB</label>
+                    <input type="date" class="form-control" name="DOB" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="DOBAsString">DOBAsString</label>
+                    <input type="text" class="form-control" name="DOBAsString" />
+                </div>
+
+
+                <div class="form-group col-md-4">
+                    <label for="Progress">Progress</label>
+                    <input type="text" class="form-control" name="Progress" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-sm btn-outline-success">Add new Person</button>
+    }*@
+
+@Html.EditorFor(m => m.Name)
+@Html.ValidationMessageFor(m => m.Name)
+<form id="newPersonForm">
+    <input type="hidden" name="Identifiant" value="0" />
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="Name">Name</label>
+            <input type="text" class="form-control" name="Name" />
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="Age">Age</label>
+            <input type="number" class="form-control" name="Age" />
+        </div>
+
+        <div class="form-group col-md-4">
+            <label for="Age">DOB</label>
+            <input type="date" class="form-control" name="DOB" />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="DOBAsString">DOBAsString</label>
+            <input type="text" class="form-control" name="DOBAsString" />
+        </div>
+
+
+        <div class="form-group col-md-4">
+            <label for="Progress">Progress</label>
+            <input type="text" class="form-control" name="Progress" />
+        </div>
+
+        <div class="form-check mb-3 col-md-2">
+            <input type="hidden" name="IsMaried" value="false">
+            <input type="checkbox" class="form-check-input" name="IsMaried" id="IsMaried" checked="checked" value='true'>
+            <label class="form-check-label" for="IsMaried" style="font-weight: bold;">Is Married</label>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-sm btn-outline-success">Add new Person</button>
+</form>
+
+<br />
+<br />
+@using (Html.BeginForm("Hello", "Home", FormMethod.Post, new { id = "demoForm" }))
+{
+
+    <div class="row">
+        <div class="col-md-4">
+            <input type="checkbox" id="afficherDOB_chk" name="afficherDOB_chk" value="Bike" onclick='handleCheckboxClick(this);'>
+            <label for="afficherDOB_chk">show history</label><br>
+        </div>
+        <div class="col-md-8">
+            <button type="button" class="btn btn-sm btn-outline-danger " onClick="handleDeleteSelectedRows()" style=" float: right; margin-left:15px">Delete selected</button>
+
+            <input id="submit_btn" type="submit" value="Enregistrer" class="btn btn-sm btn-outline-primary pull-right" style=" float: right; " />
+        </div>
+    </div>
+
+    <br />
+
+
+    @Html.Partial("_dtablePeople", Model);
+
+}
+
+@section scripts
+{
+
+    <script type="text/javascript">
+
+        function formatIsMaried(data, type, row, meta) {
+            debugger;
+            return data.toString() == "true" ? 'Yep' : 'Nope';
+        }
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            const data = new FormData(event.target);
+
+            const value = Object.fromEntries(data.entries());
+
+            console.log({ value });
+            example_render_dt.ajouterLigne(value);
+        }
+
+
+        //var dataTableApi;
+        $(function () {
+            //dataTableApi = new DtApi('example_render');
+
+            $('#newPersonForm').submit(handleSubmit);
+        })
+
+        function OnRowSelected(e, dt, type, indexes) {
+            console.log('OnRowSelected');
+        }
+
+        function OnRowDeselected(e, dt, type, indexes) {
+            console.log('OnRowDeselected');
+        }
+        function beforeRowSelection(e, dt, type, cell, originalEvent) {
+            console.log('beforeRowSelection');
+        }
+
+        function handleAddNew() {
+            console.log('handleAddNew');
+
+            debugger;
+            const data = new FormData('newPersonForm');
+
+            const value = Object.fromEntries(data.entries());
+
+            example_render_dt.ajouterLigne(value);
+        }
+        function handleDeleteSelectedRows() {
+            example_render_dt.recupereLignesSelectionnees().supprimerLignes();
+        }
+
+        //function getPeopleSector(data, type, row, meta) {
+        function getPeopleSector(data) {
+
+            console.log('getPeopleSector');
+            var afficherDate = $('#afficherDOB_chk')[0].checked;
+            //data.push({ afficherDate: afficherDate, status:'OK' });
+
+            data.afficherDate = afficherDate;
+            data.status = 'OK';
+            return data;
+        }
+
+        function beforeSendFunction(xhr, opts) {
+            console.log('beforeSendFunction');
+            console.log(xhr);
+            console.log(opts);
+        }
+        function onErrorFunction(e) {
+            console.log('onErrorFunction');
+            console.log(e);
+        }
+
+        function onSuccessFunction(data) {
+            console.log('onSuccessFunction');
+            console.log(data);
+        }
+        function bold(d, t, r, m) {
+
+            return '<b style="color: red;">' + d + '</b>';
+        }
+
+        function onRender(data, type, row, meta) {
+            return '<button type="button" data-type="view" class="btn btn-sm btn-default"><i class="fa fa-lg fa-fw fa-search"></i></button> <button type="button" data-type="remove" class="btn btn-sm btn-danger"><i class="fa fa-lg fa-fw fa-trash"></i></button>';
+        }
+
+        function handleCmdDeletePerson(e) {
+
+            var rowIndex = $(e).data("row-index");
+
+            example_render_dt.recupereLigneParIndex(rowIndex).supprimerLigne();
+        }
+
+        function handleCmdEditPerson(e) {
+
+            var rowIndex = $(e).data("row-index")
+
+            var rowdata = example_render_dt.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
+            alert('You selected "' + rowdata.Name);
+
+        }
+
+        function cmdEditPerson(data, type, row, meta) {
+
+            return '<button type="button" data-type="view" class="btn btn-sm btn-primary"  onClick="handleCmdEditPerson(this)" data-person-id="' + row.Identifiant + '" data-row-index="' + meta.row + '">Edit</button> ' +
+                '<button type="button" data-type="view" class="btn btn-sm btn-danger" onClick="handleCmdDeletePerson(this)" data-person-id="' + row.Identifiant + '" data-row-index="' + meta.row + '">Delete</button> ';
+        }
+
+        function renderDate(data, type, row, meta) {
+
+            if (data === null) return "";
+
+            var pattern = /Date\(([^)]+)\)/;
+            var results = pattern.exec(data);
+            var dt = new Date(parseFloat(results[1]));
+
+            return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
+        }
+
+
+
+        function onRowAdded(e) {
+            console.log('onRowAdded');
+            console.log(e.dt_newRow);
+            console.log(e.dt_context);
+
+        }
+        function onRowAdding(e) {
+            console.log('onRowAdding');
+            //e.preventDefault();
+            console.log(e.dt_newRow);
+            console.log(e.dt_context);
+        }
+        function onRowRemoving(e) {
+            console.log('removing:');
+
+            // e.preventDefault();
+            console.log(e.dt_rowIndex);
+            console.log(e.dt_rowData);
+        }
+        function onRowRemoved(e) {
+
+            console.log('removed:');
+            console.log(e.dt_rowIndex);
+            console.log(e.dt_rowData);
+
+            //var gridDs = e.dt_context.rows().data().toArray();
+
+            //$('#gridData').val(JSON.stringify(gridDs));
+        }
+
+        function OnRowUpdating(e) {
+            console.log('OnRowUpdating:');
+            //e.preventDefault();
+        }
+
+        function OnRowUpdated(e) {
+            console.log('OnRowUpdated:');
+
+            //var gridDs = e.dt_context.rows().data().toArray();
+
+            //$('#gridData').val(JSON.stringify(gridDs));
+        }
+
+        function onInitComplete(dtApi) {
+            var afficherdate = $('#afficherDOB_chk')[0].checked;
+            var i = dtApi.column('DOBAsString:name').index();
+            dtApi.column(i).visible(afficherdate);
+
+            //  addFootersSearchInputs(dtApi);
+        }
+
+        function handleCheckboxClick(e) {
+
+            var dt = $('#example_render').DataTable();
+            dt.ajax.reload(function () {
+                var afficherdate = $('#afficherDOB_chk')[0].checked;
+                var index = dt.column('DOBAsString:name').index();
+                dt.column(index).visible(afficherdate);
+            });
+        }
+
+        function addFootersSearchInputs(dtApi) {
+            var columns = dtApi.settings().init().columns
+            dtApi.columns().flatten().each(function (colIdx) {
+                console.log('col name= ' + columns[colIdx].data);
+
+                if (columns[colIdx].data !== null && columns[colIdx].visible !== false) {
+                    // Create the select list and search operation
+                    var select = $('<select style=""width:100%""/>')
+                        .appendTo(
+                            dtApi.column(colIdx).footer()
+                        )
+                        .on('change', function () {
+                            dtApi
+                                .column(colIdx)
+                                .search($(this).val())
+                                .draw();
+                        });
+
+                    select.append($('<option value=""> Select a value </option>'));
+                    // Get the search data for the first column and add to the select list
+                    dtApi.column(colIdx)//.data()
+                        .cache('search')
+                        .sort()
+                        .unique()
+                        .each(function (d) {
+                            select.append($('<option value="' + d + '">' + d + '</option>'));
+                        });
+                }
+            });
+        }
+    </script>
+
+}

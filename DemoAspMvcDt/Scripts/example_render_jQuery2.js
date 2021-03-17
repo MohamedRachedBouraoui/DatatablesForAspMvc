@@ -1,0 +1,1 @@
+document.write("<input type='hidden' id='dt_example_render_data' />");document.write("<table id='example_render' class='display   table table-striped table-hover table-bordered dataTable ' width='100%'><\/table>");var example_render_jQuery=$("#example_render")

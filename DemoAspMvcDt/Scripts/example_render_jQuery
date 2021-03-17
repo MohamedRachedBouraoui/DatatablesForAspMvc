@@ -1,0 +1,1 @@
+document.write("&lt;input type=&#39;hidden&#39; id=&#39;dt_example_render_data&#39; /&gt;");document.write("&lt;table id=&#39;example_render&#39; class=&#39;display   table table-striped table-hover table-bordered dataTable &#39; width=&#39;100%&#39;&gt;&lt;/table&gt;")

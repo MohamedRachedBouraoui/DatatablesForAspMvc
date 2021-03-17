@@ -1,0 +1,91 @@
+﻿@model DemoAspMvcDt.Models.CountryVm
+<div class="row">
+    <div class="col-md-12">
+
+
+        @(Html.DataTable().Build<Person>("example_render")
+        .TableOptions(o =>
+        {
+            o.CreateApiInstance("example_render_dt");
+            o.Dom("Bfrtipl");
+            o.EnablesearchHighlight();
+            o.SetClassName(" table table-striped table-hover table-bordered dataTable ");
+            //o.EnableServerSideProcessing();
+            //o.EnableStateSaving();
+            o.AddDefaultSettings("DataTableConfig.dtDefaults");
+            //o.DisableOrdering();
+            //o.DisableInfoDisplaying();
+            //o.DisablePaging();
+            o.EnableColReordering(1,1);//TODO: Enhance
+            //                           // o.EnableFixedColumns();
+            o.EnableYScrolling("400px");
+            o.DisplayProcessingMessage();
+            //o.EnableFixedHeaders();
+            //o.DisableSearching();
+            // o.DisableColumnsAutoWidth();
+            //o.DisplayFooters();
+            // o.EnableDeferRendering();
+            o.HandleInitCompletionWith("onInitComplete");
+            o.RowId(c=>c.Identifiant);
+            //o.SetupPagingLengthMenu(c =>
+            //{
+            //    c.Add(new int[] { 10, 25, 50 });
+            //    c.Add(-1, "All");
+            //});
+            //o.EnableServerSideProcessing(); // TODO: how to send datatable data with custom data while using Ajax
+        })
+        .SetupColumns(cols =>
+        {
+            cols.SetColumnAsCheckBox(nameof(Person.Identifiant)); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
+            cols.ColumnFor(c => c.Identifiant).ThenHideIt().SetOrderingToAsc(); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
+            cols.ColumnFor(c => c.Name).DisableOrdering().WithClassName("test_class_type").ToRenderItUse("bold");//.SetOrderingToDesc();
+            cols.ColumnFor(c => c.Age).WithClassName("demo-class");//.SetOrderingToAsc();
+
+            cols.ColumnFor(c => c.DOB);//.ButDisableSearching().SetTheHeaderTextTo("D_O_B");
+            cols.ColumnFor(c => c.IsMaried).SetTheHeaderTextTo("Married").ToRenderItUse("formatIsMaried");
+            cols.ColumnFor(c => c.Progress).RenderItAsProgressBar();
+
+            cols.SetColumnAsCommand(() => "cmdEditPerson").Width("13%");//.OnClick("handleCmdEditPerson") ;//TODO: width && .Title("");
+            cols.AddEditRowcCmd("Update Person");
+
+        })
+        .Events(e =>
+        {
+            e.WhenARowIsAddedThenInvoke("onRowAdded");
+
+            e.BeforeAddingARowInvoke("onRowAdding");
+
+            e.BeforeRemovingARowInvoke("onRowRemoving");
+            e.WhenARowIsRemovedThenInvoke("onRowRemoved");
+
+            e.BeforeUpdatingARowInvoke("OnRowUpdating");
+            e.WhenARowIsUpdatedThenInvoke("OnRowUpdated");
+
+            e.WhenARowIsSelectedThenInvoke("OnRowSelected");
+            e.WhenARowIsDeselectedThenInvoke("OnRowDeselected");
+            e.BeforeSelectingARowInvoke("beforeRowSelection");
+
+        })
+        .Buttons(b => {
+            // b.Excel().Text("Excel-2").ClassName("dt_excel_btn").UseXls().AllowNullData();
+            b.Pdf().Text("Export PDF").ClassName("dt_pdf_btn");
+        })
+        .DataSource(ds =>
+        {
+
+            //ds.Data(@Model.People);//TODO-Set items as javascript array to dataTable (for performance)
+            ds.HandleDataByAjax("/Home/GetPeople")
+            .BeforeSendingRequestInvoke("beforeSendFunction")
+            .WhenRequestSucceedThenInvoke("onSuccessFunction")
+            .IfRequestFailsThenInvoke("onErrorFunction")
+            .ToSetAdditionalDataUse("getPeopleSector")  ;
+            //.DeferLoading();
+
+            //ds.SubmitDataWithMultipleHiddenInputs("People", "demoForm"); // TODO auto detect prefix for hidden inputs
+            ds.SubmitDataAsJson("list_items", "");
+        })
+        )
+
+    </div>
+
+</div>
