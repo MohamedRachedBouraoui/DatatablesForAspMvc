@@ -8,7 +8,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         public bool IsCommand { get; protected set; }
         public bool IsCheckBoxColumn { get; protected set; }
         public bool IsEditRowCommand { get; protected set; }
-        public string EditPopupTitle { get; protected set; }
+        
         public string OrderDirection { get; protected set; }
 
         public abstract JToken ToJToken();

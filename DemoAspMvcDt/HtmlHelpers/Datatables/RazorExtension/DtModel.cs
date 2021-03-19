@@ -1,4 +1,5 @@
-﻿using DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension;
+﻿using DemoAspMvcDt.HtmlHelpers.Datatables.Column;
+using DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension;
 using DemoAspMvcDt.HtmlHelpers.Datatables.Table;
 using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
@@ -36,6 +37,9 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
         public string TableDefaultDatesFormat { get; private set; }
         public bool HasEditRowCommand { get; private set; }
         public string EditPopupTitle { get; private set; }
+        public bool FetchEditViewFromServerSide { get; private set; }
+        public string FetchEditViewFromUrl { get; private set; }
+        public string ValidateEditViewByUrl { get; private set; }
 
         #endregion
 
@@ -117,15 +121,14 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
             }
             if (dtBuilder.DtaTableColumnsFactory.Columns.Any(c => c.IsEditRowCommand))
             {
-                dtModel.EditPopupTitle = dtBuilder.DtaTableColumnsFactory.Columns.First(c => c.IsEditRowCommand).EditPopupTitle;
-
+                DataTableCommandEditBuilder dtCommandEditBuilder = ((DataTableCommandEditBuilder)dtBuilder.DtaTableColumnsFactory.Columns.First(c => c.IsEditRowCommand));
+                
                 dtModel.HasEditRowCommand = true;
+                dtModel.EditPopupTitle = dtCommandEditBuilder.EditPopupTitle;
+                dtModel.FetchEditViewFromServerSide = dtCommandEditBuilder.IsServerSide;
+                dtModel.FetchEditViewFromUrl = dtCommandEditBuilder.FetchViewFromUrl;
+                dtModel.ValidateEditViewByUrl = dtCommandEditBuilder.ValidateByUrl;
             }
-
-
-
-
-
         }
         private static void InitFormConfig<T>(DataTableBuilder<T> dtBuilder, DtModel dtModel) where T : class
         {

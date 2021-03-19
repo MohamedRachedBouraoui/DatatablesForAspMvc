@@ -20,7 +20,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         public bool IsHiden { get; private set; }
 
         public Expression Expression { get; internal set; }
-
+        public string EditPopupTitle { get; private set; }
 
         public DataTableCommandBuilder()
         {
@@ -141,40 +141,12 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
             _jObject.Add("checkboxes", new JObject
             {
                 { "selectRow",new JValue(true)}
-            });
-
-            //_jObject.Add("orderable", new JValue(false));
-        }
-
-        public void EditRowCommand(string editPopupTitle)
-        {
-            IsEditRowCommand = true;
-            EditPopupTitle = editPopupTitle;
-            _jObject.Remove("data");
-            _jObject.Add("data", new JRaw("null"));
-            _jObject.Add("orderable", new JValue(false));
-            _jObject.Add("className", new JValue("dt-command"));
-            _jObject.Add("render", new JRaw($@"function ( data, type, row, meta ){{
-    if(row.isDirty){{
-console.log('row.tdUid: '+row.tdUid);
-    return '<i class=""dt-cancel-edit-command fas fa-undo-alt"" data-row-index='+meta.row+' data-td-uid='+row.td_uid+'></i>';
-    }}
-        return '<i class=""dt-edit-command far fa-edit"" data-row-index='+meta.row+'></i>';
-    }}"));
+            });            
         }
 
         public override JToken ToJToken()
         {
             return _jObject;
         }
-        ///// <summary>
-        ///// Gets the <see cref="JToken"/> of current instance
-        ///// </summary>
-        ///// <returns></returns>
-        //[EditorBrowsable(EditorBrowsableState.Never)]
-        //public JToken ToJToken()
-        //{
-        //    return _jObject;
-        //}
     }
 }

@@ -34,10 +34,12 @@ namespace DemoAspMvcDt
 
                      "~/Scripts/dt4mvc/dtDatesHelper.js",
                      "~/Scripts/dt4mvc/DataTableApi.js",
+                     "~/Scripts/dt4mvc/dtAjaxHelper.js",
                      "~/Scripts/dt4mvc/dtTableHtmlHelper.js",
                      "~/Scripts/dt4mvc/dtFormHelper.js",
                      "~/Scripts/dt4mvc/dtEditCmd.js",
-                     "~/Scripts/dt4mvc/dtEventsHelper.js"
+                     "~/Scripts/dt4mvc/dtEventsHelper.js",
+                     "~/Scripts/dt4mvc/dtModalHelper.js"
                      ));
 
             bundles.Add(new StyleBundle("~/Content/dt4mvc").Include(

@@ -144,10 +144,9 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
             return cmd;
         }
 
-        public DataTableCommandBuilder AddEditRowcCmd(string popupTitle)
+        public DataTableCommandEditBuilder AddEditRowcCmd(string popupTitle)
         {
-            DataTableCommandBuilder cmd = new DataTableCommandBuilder();
-            cmd.EditRowCommand(popupTitle);
+            DataTableCommandEditBuilder cmd = new DataTableCommandEditBuilder(popupTitle);
             this.Columns.Add(cmd);
             return cmd;
         }

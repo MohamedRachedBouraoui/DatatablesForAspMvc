@@ -17,7 +17,7 @@
              //Edit Column: must be setup before datatable creation to catch the draw event
             @if (Model.HasEditRowCommand)
             {
-                <text>
+                <text>            
             _jQueryTable.on('draw.dt', function () { DtEditCmd.setEditCmd(dtModel, _jQueryTable, rawTableName); });
                 </text>
             }

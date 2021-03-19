@@ -33,7 +33,18 @@
             });
         }
     }
+
+
+    function renderEditRowCommand(data, type, row, meta) {
+        if (row.isDirty) {
+
+            return '<i class="dt-cancel-edit-command fas fa-undo-alt" data-row-index=' + meta.row + ' data-td-uid=' + row.td_uid + '></i>';
+        }
+        return '<i class="dt-edit-command far fa-edit" data-row-index=' + meta.row + '></i>';
+    }
+
     return {
-        setupEvents
+        setupEvents,
+        renderEditRowCommand
     }
 })();

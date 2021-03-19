@@ -168,6 +168,7 @@
     <Compile Include="HtmlHelpers\Datatables\Column\DataTableColumnBuilder.cs" />
     <Compile Include="HtmlHelpers\Datatables\Column\DataTableColumnOptions.cs" />
     <Compile Include="HtmlHelpers\Datatables\Column\DataTableColumnsFactory.cs" />
+    <Compile Include="HtmlHelpers\Datatables\Column\DataTableCommandEditBuilder.cs" />
     <Compile Include="HtmlHelpers\Datatables\Column\DataTableCommandBuilder.cs" />
     <Compile Include="HtmlHelpers\Datatables\Column\RenderOptions.cs" />
     <Compile Include="HtmlHelpers\Datatables\Column\RenderType.cs" />
@@ -234,6 +235,8 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\DataTableConfig.js" />
+    <Content Include="Scripts\dt4mvc\dtModalHelper.js" />
+    <Content Include="Scripts\dt4mvc\dtAjaxHelper.js" />
     <Content Include="Scripts\dt4mvc\DataTableApi.js" />
     <Content Include="Scripts\dt4mvc\vendors\datatables.min.js" />
     <Content Include="Scripts\dt4mvc\vendors\dataTables.searchHighlight.min.js" />
