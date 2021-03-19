@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DemoAspMvcDt.Models
 {
-    [ValiderAvec(typeof(ValidateurPerson))]
+    //[ValiderAvec(typeof(ValidateurPerson))]
     public class Person
     {
         public int Identifiant { get; set; }

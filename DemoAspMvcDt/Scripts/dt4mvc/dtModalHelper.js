@@ -10,20 +10,27 @@
     const DT_MODAL_CONFIRMED_EVENT = 'dt-modal-confirmed';
     const DT_MODAL_CANCELED_EVENT = 'dt-modal-canceled';
 
+    const DT_MODAL_SIZE_DEFAULT = '';//500px
+    const DT_MODAL_SIZE_S = 'modal-sm';//300px
+    const DT_MODAL_SIZE_LG = 'modal-lg';//800px
+    const DT_MODAL_SIZE_XL = 'modal-xl';//1140px
+
     function getModalTemplate() {
         return `
             <div class="modal fade" id="dt_modal" tabindex="-1" role="dialog" aria-labelledby="dt_modalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
+              <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <i class="fas fa-info fa-2x" style="color: cornflowerblue;"></i>
+                    <i class="fas fa-info fa-2x mr-4" style="color: cornflowerblue;"></i>
                     <h5 class="modal-title" id="dt_modalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
                   <div class="modal-body">
-                    ...
+                  <div class="container-fluid">
+
+                  </div>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary ${DT_MODAL_BTN_CANCEL}" data-dismiss="modal" >Close</button>
@@ -65,23 +72,34 @@
         });
     }
 
-    function show(title, html, confirmCallback) {
+    function show(title, html, confirmCallback,size) {
+        debugger;
+        size = size || DT_MODAL_SIZE_DEFAULT;
+
         createModalTemplate();
         jqueryModal.off(DT_MODAL_CONFIRMED_EVENT).on(DT_MODAL_CONFIRMED_EVENT, function (e) {
             confirmCallback(e);
         });
 
         jqueryModal.find('.modal-title').html('    '+title);
-        jqueryModal.find('.modal-body').html(html);
-        jqueryModal.modal('show');
+        jqueryModal.find('.modal-body .container-fluid').empty().html(html);
+
+        jqueryModal.find('.modal-dialog').addClass(size);
+        jqueryModal.modal('toggle');
+        //jqueryModal.modal('handleUpdate');
+        //jqueryModal.modal('show');
     }
 
     function hide() {
-        jqueryModal.modal('hide');
+        jqueryModal.modal('toggle');
+        //jqueryModal.modal('hide');
     }
 
     return {
         show,
-        hide
+        hide,
+        DT_MODAL_SIZE_S,
+        DT_MODAL_SIZE_LG, 
+        DT_MODAL_SIZE_XL 
     }
 })();

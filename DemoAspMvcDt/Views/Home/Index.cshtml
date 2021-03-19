@@ -1,43 +1,7 @@
 ﻿@model DemoAspMvcDt.Models.CountryVm
 
-@*@using (Html.BeginForm("AddPerson", "Home", FormMethod.Post, new { id = "add_person_form" }))
-    {
-            <input type="hidden" name="Identifiant" value="0" />
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="Name">Name</label>
-                    <input type="text" class="form-control" name="Name" />
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label for="Age">Age</label>
-                    <input type="number" class="form-control" name="Age" />
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label for="Age">DOB</label>
-                    <input type="date" class="form-control" name="DOB" />
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="DOBAsString">DOBAsString</label>
-                    <input type="text" class="form-control" name="DOBAsString" />
-                </div>
 
 
-                <div class="form-group col-md-4">
-                    <label for="Progress">Progress</label>
-                    <input type="text" class="form-control" name="Progress" />
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-sm btn-outline-success">Add new Person</button>
-    }*@
-
-@Html.EditorFor(m => m.Name)
-@Html.ValidationMessageFor(m => m.Name)
 <form id="newPersonForm">
     <input type="hidden" name="Identifiant" value="0" />
     <div class="form-row">

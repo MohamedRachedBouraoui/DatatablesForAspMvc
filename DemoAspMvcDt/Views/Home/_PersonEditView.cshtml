@@ -1,0 +1,48 @@
+﻿@model Person
+
+    @Html.HiddenFor(m => m.Identifiant)
+
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            @Html.LabelFor(m => m.Name, new { @class = "font-weight-bold required-field" })
+            @Html.EditorFor(m => m.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group col-md-4">
+            @Html.LabelFor(m => m.Age, new { @class = "font-weight-bold required-field" })
+            @Html.EditorFor(m => m.Age, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Age, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group col-md-4">
+            @Html.LabelFor(m => m.DOB, new { @class = "font-weight-bold required-field" })
+            @Html.EditorFor(m => m.DOB, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.DOB, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            @Html.LabelFor(m => m.DOBAsString, new { @class = "font-weight-bold required-field" })
+            @Html.EditorFor(m => m.DOBAsString, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.DOBAsString, "", new { @class = "text-danger" })
+        </div>
+
+
+        <div class="form-group col-md-4">
+            @Html.LabelFor(m => m.Progress, new { @class = "font-weight-bold required-field" })
+            @Html.EditorFor(m => m.Progress, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Progress, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-check mb-3 col-md-2">
+            @Html.LabelFor(m => m.IsMaried)
+            @Html.CheckBoxFor(m => m.IsMaried, new { @class = "form-control" })
+
+            @*<input type="hidden" name="IsMaried" value="false">
+                <input type="checkbox" class="form-check-input" name="IsMaried" id="IsMaried" checked="checked" value='true'>
+                <label class="form-check-label" for="IsMaried" style="font-weight: bold;">Is Married</label>*@
+        </div>
+    </div>

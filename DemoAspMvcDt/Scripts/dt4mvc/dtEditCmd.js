@@ -7,35 +7,27 @@
     let rowsUidDic = {};
     let rowUid = 1;
 
-    function setRowUid(rowOldData) {
-        rowsUidDic[rowUid.toString()] = rowOldData;
-        return rowUid++;
-    }
-
-    function getOldRowDataByRowUid(rowUid) {
-        let olddata = rowsUidDic[rowUid];
-        return olddata;
-    }
-
     function setEditCmd(dtModel, _jQueryTable, rawTableName) {
         let popupTitle = dtModel.EditPopupTitle;
 
-        //The problem is that .click() only works for elements that already existed when the page loaded. 
-        _jQueryTable.find('.dt-edit-command').off();
+        _jQueryTable.off('click', '.dt-edit-command');
+       // _jQueryTable.find('.dt-edit-command').off();
         _jQueryTable.on('click', '.dt-edit-command', function (e) {
             let editBtn = $(e.target);
 
             if (dtModel.FetchEditViewFromServerSide === true) {
+                console.log('FetchEditViewFromServerSide...');
                 handleEditRowCmdFromServer(dtModel, popupTitle, editBtn, rawTableName, _jQueryTable);
             } else {
                 handleEditRowCmd(popupTitle, editBtn, rawTableName, _jQueryTable);
             }
         });
 
-        _jQueryTable.find('.dt-cancel-edit-command ').off();
+        _jQueryTable.off('click', '.dt-cancel-edit-command ');
         _jQueryTable.on('click', '.dt-cancel-edit-command ', function (e) {
             let editBtn = $(e.target);
-            handleCancelEditRowCmd(popupTitle, editBtn, rawTableName);
+            handleCancelEditRowCmd(editBtn, rawTableName);
+            return false;
         });
     }
 
@@ -52,59 +44,15 @@
             rowOldData[TD_UID_PROP] = setRowUid(rowOldData);
         }
 
-        DtAjaxHelper.fetchView(dtModel.FetchEditViewFromUrl, function (html) {
-
-            Swal.fire({
-                title: `<strong>${popupTitle}</strong>`,
-                icon: 'info',
-                html: '<form class="dt-edit-form" style="text-align:left;">' + html + '</form>',
-                className: "dt-popup-edit-swal-actions",
-                showCloseButton: true,
-                showCancelButton: true,
-                focusConfirm: false,
-                confirmButtonText:
-                    '<i class="fa fa-thumbs-up"></i> Save',
-                cancelButtonText:
-                    '<i class="fa fa-thumbs-down"> Cancel</i>',
-                preConfirm: () => {
-
-                    let form = $('.dt-edit-form');
-                    $.validator.unobtrusive.parse(form);
-                    if (form.valid() == false) {
-                        return false;
-                    }
-                    let result = {};
-                    form.submit(function (event) {
-                        event.preventDefault();
-                        const data = new FormData(event.target);
-
-                        result = Object.fromEntries(data.entries());
-                    });
-
-                    form.submit();
-
-                    return result;
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // alert(JSON.stringify(result.value));
-                    updateRow(rawTableName, rowIndex, result.value);
-                    //editBtn.removeClass('dt-btn-edit');
-                    //editBtn.addClass('dt-btn-cancel-edit');
-
-                }
-            });
-
-        }, rowOldData);
-
-
-
+        DtAjaxHelper.fetchView(dtModel.FetchEditViewFromUrl, rowOldData, function (response) {
+            displayHtmlInModalAndHandleFormSubmit(response, popupTitle, rawTableName, rowIndex, rowOldData[TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
+            
+        });
     }
 
 
     // Client side
     function handleEditRowCmd(popupTitle, editBtn, rawTableName, _jQueryTable) {
-        //getGuid
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
         let dt_api = new DtApi(rawTableName);
@@ -116,31 +64,7 @@
         }
         let html = buildHtmlForEdition(rowOldData, _jQueryTable);
 
-        html = `<form class="dt-edit-form">${html}</form>`;
-
-        DtModalHelper.show(popupTitle, html, function (e) {
-
-            let form = $('.dt-edit-form');
-            $.validator.unobtrusive.parse(form);
-            if (form.valid() == false) {
-                e.preventDefault();
-                return;
-            } else {
-                let result = {};
-                form.off().submit(function (event) {
-                    event.preventDefault();
-
-                    const data = new FormData(event.target);
-                    result = Object.fromEntries(data.entries());
-
-                    updateRow(rawTableName, rowIndex, result);
-
-                    DtModalHelper.hide();
-                });
-
-                form.submit();
-            }
-        });
+        displayHtmlInModalAndHandleFormSubmit(html, popupTitle, rawTableName, rowIndex);
     }
 
     function buildHtmlForEdition(rowOldData, _jQueryTable) {
@@ -183,64 +107,56 @@
         return inputs.join('');
     }
 
-    //Shared between server &s client sides
-    function handleCancelEditRowCmd(popupTitle, editBtn, rawTableName) {
-        //getGuid
-        debugger;
+    //Shared between server & client sides
+    function displayHtmlInModalAndHandleFormSubmit(html, popupTitle, rawTableName, rowIndex, rowOldDataUid,modalSize) {
+       
+       
+        html = `<form class="dt-edit-form">${html}</form>`;
+
+        DtModalHelper.show(popupTitle, html, function (e) {
+
+            let form = $('.dt-edit-form');
+            $.validator.unobtrusive.parse(form);
+            if (form.valid() == false) {
+                e.preventDefault();
+                return;
+            } else {
+                let result = {};
+                form.off().submit(function (event) {
+                    event.preventDefault();
+
+                    const data = new FormData(event.target);
+                    result = Object.fromEntries(data.entries());
+
+                    //rowOldDataUid is passed Only if we fetch the view from server because it's not a property of the ViewModel
+                    result[TD_UID_PROP] = result[TD_UID_PROP]|| rowOldDataUid;
+                    updateRow(rawTableName, rowIndex, result);
+
+                    DtModalHelper.hide();
+                });
+
+                form.submit();
+            }
+        }, modalSize);
+    }
+
+    function setRowUid(rowOldData) {
+        rowsUidDic[rowUid.toString()] = rowOldData;
+        return rowUid++;
+    }
+
+    function getOldRowDataByRowUid(rowUid) {
+        let olddata = rowsUidDic[rowUid];
+        return olddata;
+    }
+
+    function handleCancelEditRowCmd(editBtn, rawTableName) {
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
-        //let dt_api = new DtApi(rawTableName);
-        //let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
-
         let currentRowUud = editBtn.data(TD_UID_DATA);
         let oldRowData = getOldRowDataByRowUid(currentRowUud);
 
         resetRow(rawTableName, rowIndex, oldRowData);
-        //if (currentRowUud == undefined) {
-        //    editBtn.attr(TD_UID_DATA, setRowUid(rowOldData));
-        //}
-        //let html = buildHtmlForEdition(rowOldData, _jQueryTable);
-        //Swal.fire({
-        //    title: `<strong>${popupTitle}</strong>`,
-        //    icon: 'info',
-        //    html: '<form class="dt-edit-form" style="text-align:left;">' + html.join('') + '</form>',
-        //    //focusConfirm: false,
-        //    className: "dt-popup-edit-swal-actions",
-        //    showCloseButton: true,
-        //    showCancelButton: true,
-        //    focusConfirm: false,
-        //    confirmButtonText:
-        //        '<i class="fa fa-thumbs-up"></i> Save',
-        //    cancelButtonText:
-        //        '<i class="fa fa-thumbs-down"> Cancel</i>',
-        //    preConfirm: () => {
-
-        //        let form = $('.dt-edit-form');
-        //        $.validator.unobtrusive.parse(form);
-        //        if (form.valid() == false) {
-        //            return false;
-        //        }
-        //        let result = {};
-        //        form.submit(function (event) {
-        //            event.preventDefault();
-        //            const data = new FormData(event.target);
-
-        //            result = Object.fromEntries(data.entries());
-        //        });
-
-        //        form.submit();
-
-        //        return result;
-        //    }
-        //}).then((result) => {
-        //    if (result.isConfirmed) {
-        //        // alert(JSON.stringify(result.value));
-        //        updateRow(rawTableName, rowIndex, result.value);
-        //        //editBtn.removeClass('dt-btn-edit');
-        //        //editBtn.addClass('dt-btn-cancel-edit');
-
-        //    }
-        //});
     }
 
     function updateRow(rawTableName, rowIndex, values) {

@@ -3,6 +3,7 @@ using DemoAspMvcDt.HtmlHelpers.Datatables.ServerSide;
 using DemoAspMvcDt.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -22,11 +23,23 @@ namespace DemoAspMvcDt.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+
+        public ActionResult GetPersonEditView(Person person)
+        {
+            return PartialView("_PersonEditView", person);
+            //var html = ConvertirVueString("_PersonEditView", person);
+            //return Json(new
+            //{
+            //    success=true,
+            //    html
+            //}, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Index()
         {
             ViewBag.AfficherDate = false;
             List<Person> people = BuildPeopleList();
-            return View(new CountryVm { Id = 1,Name= "CountryVm_name", People = people });
+            return View(new CountryVm { Id = 1, Name = "CountryVm_name", People = people });
         }
 
         //public ActionResult Hello(List<Person> vm)
@@ -86,9 +99,22 @@ namespace DemoAspMvcDt.Controllers
                  .RuleFor(u => u.Age, f => f.Random.Number(0, 100))
                  .RuleFor(o => o.IsMaried, f => f.PickRandom(civil))
                  .RuleFor(u => u.Progress, f => f.Random.Number(0, 100).ToString());
-                    people.Add(fakePerson.Generate());
+                people.Add(fakePerson.Generate());
             }
             return people;
+        }
+
+
+        private string ConvertirVueString<TModel>(string cheminVue, TModel model)
+        {
+            ViewData.Model = model;
+            using (StringWriter writer = new StringWriter())
+            {
+                ViewEngineResult vResult = ViewEngines.Engines.FindPartialView(ControllerContext, cheminVue);
+                ViewContext vContext = new ViewContext(this.ControllerContext, vResult.View, ViewData, new TempDataDictionary(), writer);
+                vResult.View.Render(vContext, writer);
+                return writer.ToString();
+            }
         }
     }
 }

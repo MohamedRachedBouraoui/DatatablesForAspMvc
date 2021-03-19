@@ -46,7 +46,7 @@
             cols.ColumnFor(c => c.Progress).RenderItAsProgressBar();
 
             cols.SetColumnAsCommand(() => "cmdEditPerson").Width("13%");//.OnClick("handleCmdEditPerson") ;//TODO: width && .Title("");
-            cols.AddEditRowcCmd("Update Person !!");//.FetchViewFrom(Url.Action("GetPersonEditView")).ValidateBy(Url.Action("ValidateEditPersonEdit"));
+            cols.AddEditRowcCmd("Update Person !!").FetchViewFrom(Url.Action("GetPersonEditView"));//.ValidateBy(Url.Action("ValidateEditPersonEdit"));
 
         })
         .Events(e =>

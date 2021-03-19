@@ -48,7 +48,7 @@ namespace DemoAspMvcDt
                      "~/Content/dt4mvc/dt_buttons/buttons.dataTables.min.css",
                      "~/Content/dt4mvc/vendors/dataTables.checkboxes.css",
                      "~/Content/dt4mvc/vendors/dataTables.searchHighlight.css",
-                     "~/Content/dt4mvcdt_style.css"));
+                     "~/Content/dt4mvc/dt_style.css"));
 
 
 
