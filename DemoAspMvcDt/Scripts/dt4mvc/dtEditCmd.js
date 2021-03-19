@@ -8,18 +8,17 @@
     let rowUid = 1;
 
     function setEditCmd(dtModel, _jQueryTable, rawTableName) {
-        let popupTitle = dtModel.EditPopupTitle;
 
         _jQueryTable.off('click', '.dt-edit-command');
-       // _jQueryTable.find('.dt-edit-command').off();
+        // _jQueryTable.find('.dt-edit-command').off();
         _jQueryTable.on('click', '.dt-edit-command', function (e) {
             let editBtn = $(e.target);
 
             if (dtModel.FetchEditViewFromServerSide === true) {
                 console.log('FetchEditViewFromServerSide...');
-                handleEditRowCmdFromServer(dtModel, popupTitle, editBtn, rawTableName, _jQueryTable);
+                handleEditRowCmdFromServer(dtModel, editBtn, rawTableName, _jQueryTable);
             } else {
-                handleEditRowCmd(popupTitle, editBtn, rawTableName, _jQueryTable);
+                handleEditRowCmd(dtModel, editBtn, rawTableName, _jQueryTable);
             }
         });
 
@@ -32,7 +31,7 @@
     }
 
     // Server-Side
-    function handleEditRowCmdFromServer(dtModel, popupTitle, editBtn, rawTableName, _jQueryTable) {
+    function handleEditRowCmdFromServer(dtModel, editBtn, rawTableName, _jQueryTable) {
         //getGuid
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
@@ -44,15 +43,15 @@
             rowOldData[TD_UID_PROP] = setRowUid(rowOldData);
         }
 
-        DtAjaxHelper.fetchView(dtModel.FetchEditViewFromUrl, rowOldData, function (response) {
-            displayHtmlInModalAndHandleFormSubmit(response, popupTitle, rawTableName, rowIndex, rowOldData[TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
-            
+        DtAjaxHelper.fetchView(dtModel.FetchEditViewFromUrl, rowOldData, function (html) {
+            displayHtmlInModalAndHandleFormSubmit(html, dtModel, rawTableName, rowIndex, rowOldData[TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
+
         });
     }
 
 
     // Client side
-    function handleEditRowCmd(popupTitle, editBtn, rawTableName, _jQueryTable) {
+    function handleEditRowCmd(dtModel, editBtn, rawTableName, _jQueryTable) {
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
         let dt_api = new DtApi(rawTableName);
@@ -64,7 +63,7 @@
         }
         let html = buildHtmlForEdition(rowOldData, _jQueryTable);
 
-        displayHtmlInModalAndHandleFormSubmit(html, popupTitle, rawTableName, rowIndex);
+        displayHtmlInModalAndHandleFormSubmit(html, dtModel, rawTableName, rowIndex);
     }
 
     function buildHtmlForEdition(rowOldData, _jQueryTable) {
@@ -108,35 +107,43 @@
     }
 
     //Shared between server & client sides
-    function displayHtmlInModalAndHandleFormSubmit(html, popupTitle, rawTableName, rowIndex, rowOldDataUid,modalSize) {
-       
-       
+    function displayHtmlInModalAndHandleFormSubmit(html, dtModel, rawTableName, rowIndex, rowOldDataUid, modalSize) {
+
+
         html = `<form class="dt-edit-form">${html}</form>`;
 
-        DtModalHelper.show(popupTitle, html, function (e) {
-
+        DtModalHelper.show(dtModel.EditPopupTitle, html, function (e) {
+            debugger;
             let form = $('.dt-edit-form');
             $.validator.unobtrusive.parse(form);
-            if (form.valid() == false) {
+            if (form.valid() == false) {//client side validation
                 e.preventDefault();
                 return;
-            } else {
-                let result = {};
-                form.off().submit(function (event) {
-                    event.preventDefault();
-
-                    const data = new FormData(event.target);
-                    result = Object.fromEntries(data.entries());
-
-                    //rowOldDataUid is passed Only if we fetch the view from server because it's not a property of the ViewModel
-                    result[TD_UID_PROP] = result[TD_UID_PROP]|| rowOldDataUid;
-                    updateRow(rawTableName, rowIndex, result);
-
-                    DtModalHelper.hide();
-                });
-
-                form.submit();
             }
+            //if (dtModel.ValidateEditViewByUrl != '') { // Then we must validate in the server side also
+
+            //    let formData = DtFormHelper.getFormData(form);
+            //    DtAjaxHelper.fetchData(dtModel.ValidateEditViewByUrl, formData, function (response) {
+            //        if (response.success == true) {
+            //            //rowOldDataUid is passed Only if we fetch the view from server because it's not a property of the ViewModel
+            //            formData[TD_UID_PROP] = formData[TD_UID_PROP] || rowOldDataUid;
+            //            updateRow(rawTableName, rowIndex, formData);
+            //        } else {// modelstate is Invalid
+
+            //            DtFormHelper.displayValidationErrors(form, response.errors);
+            //            return;
+            //        }
+            //    });
+
+            //}
+            else {
+
+                // At this level, our form is validated in the client side and/or the server side
+                let formData = DtFormHelper.getFormData(form);
+                updateRow(rawTableName, rowIndex, formData);
+                DtModalHelper.hide();
+            }
+
         }, modalSize);
     }
 

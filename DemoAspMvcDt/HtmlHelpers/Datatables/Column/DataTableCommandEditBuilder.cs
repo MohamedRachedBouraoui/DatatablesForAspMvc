@@ -36,7 +36,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
                 { "className", new JValue("dt-command") },
                 { "orderable", new JValue(false) },
                 { "searchable", new JValue(false)},
-                {"width", new JValue("2em")},
+                {"width", new JValue("1em")},
                 {"render", new JRaw("function(data, type, row, meta){return DtEventsHelper.renderEditRowCommand(data, type, row, meta);}")},
             };
         }

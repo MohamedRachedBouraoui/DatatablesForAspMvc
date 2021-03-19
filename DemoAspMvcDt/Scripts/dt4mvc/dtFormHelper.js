@@ -1,6 +1,6 @@
 ﻿DtFormHelper = (function () {
 
-    function setupForm(dtModel, closestDiv, dtTable, _jQueryTable) {
+    function convertFormDataIntoHiddenInputsForSubmit(dtModel, closestDiv, dtTable, _jQueryTable) {
 
         $(closestDiv).append("<input type='hidden' id='" + dtModel.IdOfHiddenInputHoldingTableData + "' " + dtModel.NameAttributeForHiddenInputHoldingTableData + "/>");
         let form = null;
@@ -42,7 +42,34 @@
             }
         });
     }
+
+    function getFormData(form) {
+        let result = {};
+        form.off().submit(function (event) {
+            event.preventDefault();
+
+            const data = new FormData(event.target);
+            result = Object.fromEntries(data.entries());
+            
+        });
+
+        form.submit();
+
+        return result;
+    }
+
+    function displayValidationErrors(form, errors) {
+        
+        if (!errors) return;
+        for (var i = 0; i < errors.length; i++) {
+            let error = errors[i];
+            form.find(`[data-valmsg-for="${error.Key}"]`).first().html(error.Message);
+        }
+    }
+
     return {
-        setupForm
+        convertFormDataIntoHiddenInputsForSubmit,
+        getFormData,
+        displayValidationErrors
     }
 })();

@@ -52,7 +52,7 @@
             // data setup for form-Submit
             if (dtModel.IsUsedInForm) {
 
-                DtFormHelper.setupForm(dtModel, closestDiv, dtTable, _jQueryTable);
+                DtFormHelper.convertFormDataIntoHiddenInputsForSubmit(dtModel, closestDiv, dtTable, _jQueryTable);
             }
 
             DtEventsHelper.setupEvents(dtModel, dtTable);

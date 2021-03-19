@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using DemoAspMvcDt.HtmlHelpers.Datatables.ServerSide;
 using DemoAspMvcDt.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,12 +29,22 @@ namespace DemoAspMvcDt.Controllers
         public ActionResult GetPersonEditView(Person person)
         {
             return PartialView("_PersonEditView", person);
+        }
+
+        public ActionResult ValidateEditPersonEdit(Person person)
+        {
             //var html = ConvertirVueString("_PersonEditView", person);
-            //return Json(new
-            //{
-            //    success=true,
-            //    html
-            //}, JsonRequestBehavior.AllowGet);
+            JsonSerializerSettings sets = new JsonSerializerSettings
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects
+            };
+
+            var errors = new ModelErrors(ModelState).MessagesWithKeys();
+           // var errors = JsonConvert.SerializeObject(ModelState.Values.Select(m => m.Errors).Where(e => e.Count > 0), sets);
+
+            return ModelState.IsValid ?
+                Json(new { success = true }, JsonRequestBehavior.AllowGet)
+                : Json(new { success = false, errors }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Index()
         {
