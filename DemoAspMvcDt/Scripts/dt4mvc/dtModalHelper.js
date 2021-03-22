@@ -73,7 +73,7 @@
     }
 
     function show(title, html, confirmCallback,size) {
-        debugger;
+        
         size = size || DT_MODAL_SIZE_DEFAULT;
 
         createModalTemplate();

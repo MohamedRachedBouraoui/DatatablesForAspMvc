@@ -109,7 +109,7 @@
         function handleAddNew() {
             console.log('handleAddNew');
 
-            debugger;
+            
             const data = new FormData('newPersonForm');
 
             const value = Object.fromEntries(data.entries());
@@ -247,6 +247,7 @@
             dt.ajax.reload(function () {
                 var afficherdate = $('#afficherDOB_chk')[0].checked;
                 var index = dt.column('DOBAsString:name').index();
+                if (index == undefined) return;
                 dt.column(index).visible(afficherdate);
             });
         }

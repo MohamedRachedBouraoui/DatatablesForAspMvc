@@ -1,8 +1,7 @@
 ﻿DtDatesHelper = (function () {
 
     function dtConvertDates(data, dateFormat) {
-
-        
+                
         for (let _prop in data) {
 
             if (data[_prop] !== null && typeof (data[_prop]) == "object") {

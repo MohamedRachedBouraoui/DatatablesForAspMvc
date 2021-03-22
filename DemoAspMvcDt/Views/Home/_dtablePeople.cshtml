@@ -16,7 +16,7 @@
             //o.DisableOrdering();
             //o.DisableInfoDisplaying();
             //o.DisablePaging();
-            o.EnableColReordering(1,1);//TODO: Enhance
+           // o.EnableColReordering(1,1);//TODO: Enhance
             //                           // o.EnableFixedColumns();
             o.EnableYScrolling("400px");
             o.DisplayProcessingMessage();
@@ -37,7 +37,7 @@
         .SetupColumns(cols =>
         {
             // cols.SetColumnAsCheckBox(nameof(Person.Identifiant)); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
-            cols.ColumnFor(c => c.Identifiant).ThenHideIt().SetOrderingToAsc(); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
+            cols.ColumnFor(c => c.Identifiant).ButDisableSearching().DisableOrdering().ThenHideIt();//.SetOrderingToAsc(); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
             cols.ColumnFor(c => c.Name).DisableOrdering().WithClassName("test_class_type").ToRenderItUse("bold");//.SetOrderingToDesc();
             cols.ColumnFor(c => c.Age).WithClassName("demo-class");//.SetOrderingToAsc();
 
@@ -81,7 +81,7 @@
             .BeforeSendingRequestInvoke("beforeSendFunction")
             .WhenRequestSucceedThenInvoke("onSuccessFunction")
             .IfRequestFailsThenInvoke("onErrorFunction")
-            .ToSetAdditionalDataUse("getPeopleSector").DeferLoading();
+            .ToSetAdditionalDataUse("getPeopleSector");//.DeferLoading();
 
             //ds.SubmitDataWithMultipleHiddenInputs("People", "demoForm"); // TODO auto detect prefix for hidden inputs
             ds.SubmitDataAsJson("list_items", "");

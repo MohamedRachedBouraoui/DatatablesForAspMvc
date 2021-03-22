@@ -196,7 +196,9 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
             //Ajax
             if (dtBuilder.DataTableDataSourceBuilder != null && dtBuilder.DataTableDataSourceBuilder.AjaxBuilder != null)
             {
-                jObject.Add("ajax", new JRaw($@"function (data, callback, settings) {{ DtAjaxHelper.setAjaxForDt(data, callback, settings,{dtBuilder.DataTableDataSourceBuilder.ToJToken()},module_{dtModel.TableName});}}"));
+                JToken ajaxOptions = dtBuilder.DataTableDataSourceBuilder.ToJToken();
+                string _moduleName = "module_" + dtModel.TableName;
+                jObject.Add("ajax", new JRaw($@"function (data, callback, settings) {{ DtAjaxHelper.setAjaxForDt({_moduleName},data, callback, settings,{ajaxOptions});}}"));
             }
 
             //Pour intialiser la datasource par les items du Model (note: problème avec le html)
@@ -212,7 +214,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
                 jObject.Add("data", new JRaw(items));
             }
 
-            dtModel.CustomConfigValues = jObject.ToString(Newtonsoft.Json.Formatting.None);
+            dtModel.CustomConfigValues = jObject.ToString(Newtonsoft.Json.Formatting.Indented);
 
             if (dtBuilder.DataTableDataSourceBuilder != null
                 && dtBuilder.DataTableDataSourceBuilder.AjaxBuilder != null

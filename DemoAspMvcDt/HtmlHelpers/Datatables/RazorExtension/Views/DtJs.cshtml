@@ -2,70 +2,86 @@
 <script>
 
     module_@Model.TableName = (function () {
-
-             dtModel = @Html.Raw(Json.Encode(Model));
-        $(function () {
             
-            debugger;
+        @if (Model.IsDtAjaxLoadingDefferd){
+            <text>
+            let isDtAjaxLoadingDefferd = true;
+            </text>
 
-            let rawTableName = dtModel.TableName;
+        }else {
+            <text>
+            let isDtAjaxLoadingDefferd = false;
+            </text>
+        }
 
-            let closestDiv = document.getElementById(`div__dt__${rawTableName}`); //This div is added in DtModel.cs --> ToString()
+        $(function () {
 
-            let _jQueryTable = DtTableHtmlHelper.createTable(dtModel, closestDiv);
+                dtModel = @Html.Raw(Json.Encode(Model));
+
+                let rawTableName = dtModel.TableName;
+
+                let closestDiv = document.getElementById(`div__dt__${rawTableName}`); //This div is added in DtModel.cs --> ToString()
+
+                let _jQueryTable = DtTableHtmlHelper.createTable(dtModel, closestDiv);
 
 
-             //Edit Column: must be setup before datatable creation to catch the draw event
-            @if (Model.HasEditRowCommand)
+                @if (Model.HasEditRowCommand)
             {
-                <text>            
+                <text>
+                //Edit Column: must be setup before datatable creation to catch the draw event
             _jQueryTable.on('draw.dt', function () { DtEditCmd.setEditCmd(dtModel, _jQueryTable, rawTableName); });
                 </text>
             }
 
 
-                     let dtCustomConfig =@Html.Raw(Model.CustomConfigValues);
+                let dtCustomConfig =@Html.Raw(Model.CustomConfigValues);
 
 
-                     //Will merge custom and default settings for the datatable:
-                      //in this case, default settings will be overwritten by custom ones having same name
-                     // To inverse the logic, do this instead: dtCustomConfig = $.extend({},dtCustomConfig, Model.defaultDtConfigValue());
-            if (dtModel.HasDefaultSettings) {
 
-                        dtCustomConfig = $.extend({}, @Model.DefaultConfigValues (), dtCustomConfig);
-                    }
+                @if(Model.HasDefaultSettings) {
+                <text>
+                //Will merge custom and default settings for the datatable:
+                //in this case, default settings will be overwritten by custom ones having same name
+                // To inverse the logic, do this instead: dtCustomConfig = $.extend({},dtCustomConfig, Model.defaultDtConfigValue());
+            
+                    dtCustomConfig = $.extend({}, @Model.DefaultConfigValues (), dtCustomConfig);
+                </text>
+                }
 
-                    //Init dataTable
-            let dtTable =  _jQueryTable .DataTable(dtCustomConfig);
+                //Init dataTable
+                let dtTable =  _jQueryTable .DataTable(dtCustomConfig);
 
-            //Create an instance for the DtApi
-            if (dtModel.DoCreateDtApiInstance) {
+                //Create an instance for the DtApi
+                @if(Model.DoCreateDtApiInstance) {
+                    <text>
+                    // will be a global variable
+                    @Model.DtApiInstanceName = new DtApi(rawTableName);
+                    </text>
+                }
 
-                 // will be a global variable
-                  @Model.DtApiInstanceName = new DtApi(rawTableName);
-                    }
+                // data setup for form-Submit
+            @if (Model.IsUsedInForm) {
 
-            // data setup for form-Submit
-            if (dtModel.IsUsedInForm) {
-
+             <text>
                 DtFormHelper.convertFormDataIntoHiddenInputsForSubmit(dtModel, closestDiv, dtTable, _jQueryTable);
+             </text>
+                }
+
+                DtEventsHelper.setupEvents(dtModel, dtTable);
+
+
+            });//JS block-End
+
+            function deferAjaxCall() {
+                return isDtAjaxLoadingDefferd ;
+            }
+            function cancelDeferAjaxCall() {
+                isDtAjaxLoadingDefferd =false;
             }
 
-            DtEventsHelper.setupEvents(dtModel, dtTable);
-
-
-        });//JS block-End
-
-        function deferAjaxCall() {
-            return dtModel.IsDtAjaxLoadingDefferd;
-        }
-        function cancelDeferAjaxCall() {
-            return dtModel.IsDtAjaxLoadingDefferd=false;
-        }
-
-        return {
-            deferAjaxCall,
-            cancelDeferAjaxCall
-        }
-    })();
+            return {
+                deferAjaxCall,
+                cancelDeferAjaxCall
+            }
+        })();
 </script>

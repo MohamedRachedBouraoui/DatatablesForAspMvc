@@ -82,7 +82,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.DataSource
         public AjaxBuilder WhenRequestSucceedThenInvoke(string onSuccessFumctionFunc)
         {
             jObject.Remove("success");
-            jObject.Add("success", new JRaw($"function(data){{DtDatesHelper.dtConvertDates(data,$('#{tableName}').attr('default_date_time_format')); callback(data);{onSuccessFumctionFunc}(data);}}"));
+            jObject.Add("success", new JRaw($"function(data){{  DtDatesHelper.dtConvertDates(data,$('#{tableName}').attr('default_date_time_format')); callback(data);{onSuccessFumctionFunc}(data);}}"));
             return this;
         }
 

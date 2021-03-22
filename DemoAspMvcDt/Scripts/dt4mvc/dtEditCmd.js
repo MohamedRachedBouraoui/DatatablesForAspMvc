@@ -113,7 +113,7 @@
         html = `<form class="dt-edit-form">${html}</form>`;
 
         DtModalHelper.show(dtModel.EditPopupTitle, html, function (e) {
-            debugger;
+            
             let form = $('.dt-edit-form');
             $.validator.unobtrusive.parse(form);
             if (form.valid() == false) {//client side validation

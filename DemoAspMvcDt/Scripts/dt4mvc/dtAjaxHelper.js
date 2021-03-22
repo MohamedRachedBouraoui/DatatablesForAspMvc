@@ -1,15 +1,17 @@
 ﻿DtAjaxHelper = (function () {
 
-    function setAjaxForDt(data, callback, settings, ajaxOptions, currentModuleName) {//currentModuleName = 'module_'+dtModel.TableName
-
-        if (currentModuleName.deferAjaxCall()===true) {//_isDtAjaxLoadingDefferd will be set in the 'dtJs.chtml'
+    function setAjaxForDt(currentModuleName, data, callback, settings, ajaxOptions) {//currentModuleName = 'module_'+dtModel.TableName
+        
+        if (currentModuleName.deferAjaxCall() === true) {//_isDtAjaxLoadingDefferd will be set in the 'dtJs.chtml'
 
             currentModuleName.cancelDeferAjaxCall();
+
             callback({ data: [] }); // don't fire ajax, just return empty set
             return;
+        } else {
+            // the second time, the ajax method'll be called
+            $.ajax(ajaxOptions);
         }
-        // the second time, the ajax method'll be called
-        $.ajax(ajaxOptions);
     }
 
     function getAntiForgeryToken(form) {

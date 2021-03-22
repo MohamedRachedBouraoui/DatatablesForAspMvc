@@ -401,7 +401,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\_DtOptions.cshtml" />
     <Content Include="Views\Shared\_MesDemos.cshtml" />
     <Content Include="Views\Shared\Ajax.cshtml" />
     <Content Include="Views\Shared\Render.cshtml" />
