@@ -4,7 +4,8 @@
     module_@Model.TableName = (function () {
 
         $(function () {
-
+            
+            debugger;
             let dtModel = @Html.Raw(Json.Encode(Model));
 
             let rawTableName = dtModel.TableName;
@@ -23,11 +24,12 @@
             }
 
 
-                    // if true then the "ajax" call will not trigger on first time: See the "ajax" settings for the Datatable in the "dtCustomConfig" object
+                    // if true then the "ajax" call will not trigger for the first time:
+                    // See the "ajax" settings for the Datatable in the"DtAjaxHelper.js"
                     // NB: Must be placed here (just before the "dtCustomConfig")
-                    // Used in 'DtModel.cd --> InitDataTableConfig --> Ajax config'
-                    let _isDtAjaxLoadingDefferd  =dtModel.IsDtAjaxLoadingDefferd;
-
+                    // Used in 'DtAjaxHelper' --> 'currentModuleName._isDtAjaxLoadingDefferd'
+                    let _isDtAjaxLoadingDefferd  =dtModel.IsDtAjaxLoadingDefferd==='true';
+            debugger;
                      let dtCustomConfig =@Html.Raw(Model.CustomConfigValues);
 
 
@@ -40,7 +42,7 @@
                     }
 
                     //Init dataTable
-                    let dtTable  = _jQueryTable .DataTable(dtCustomConfig);
+            let dtTable =  _jQueryTable .DataTable(dtCustomConfig);
 
             //Create an instance for the DtApi
             if (dtModel.DoCreateDtApiInstance) {
@@ -60,5 +62,15 @@
 
         });//JS block-End
 
+        function deferAjaxCall() {
+            return _isDtAjaxLoadingDefferd;
+        }
+        function cancelDeferAjaxCall() {
+            return _isDtAjaxLoadingDefferd=false;
+        }
+        return {
+            deferAjaxCall,
+            cancelDeferAjaxCall
+        }
     })();
 </script>

@@ -50,7 +50,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
             string jsMified = new Minifier().MinifyJavaScript(html);
 
             //return html;
-           // return $"<div id='div__dt__{TableName}'><script>{html}</script></div>";
+            // return $"<div id='div__dt__{TableName}'><script>{html}</script></div>";
             //var result= $"<div id='div__dt__{TableName}'><script>{jsMified}</script></div>";
             //return $"<script>{jsMified}</script>";
 
@@ -62,8 +62,8 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
 
             using (StreamWriter sw = new StreamWriter(jsFileInfo.FullName))
             {
-                //sw.WriteLine(html); // Write the file.
-                sw.WriteLine(jsMified); // Write the file.
+                sw.WriteLine(html); // Write the file.
+                //sw.WriteLine(jsMified); // Write the file.
             }
             //TODO: think of reusing same file if not modified
             var result = $"<div id='div__dt__{TableName}'><script src='{jsPath}?v={DateTime.Now.Ticks}'></script></div>";//Use ?v toget latest version
@@ -122,7 +122,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
             if (dtBuilder.DtaTableColumnsFactory.Columns.Any(c => c.IsEditRowCommand))
             {
                 DataTableCommandEditBuilder dtCommandEditBuilder = ((DataTableCommandEditBuilder)dtBuilder.DtaTableColumnsFactory.Columns.First(c => c.IsEditRowCommand));
-                
+
                 dtModel.HasEditRowCommand = true;
                 dtModel.EditPopupTitle = dtCommandEditBuilder.EditPopupTitle;
                 dtModel.FetchEditViewFromServerSide = dtCommandEditBuilder.IsServerSide;
@@ -179,14 +179,14 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
             }
 
             //Select
-            if (dtBuilder.DtaTableColumnsFactory.Columns.Any(c => c.IsCheckBoxColumn))
-            {
-                jObject.Add("select", new JObject
-                    {
-                        { "style", new JValue("multi") }
-                    });
+            //if (dtBuilder.DtaTableColumnsFactory.Columns.Any(c => c.IsCheckBoxColumn))
+            //{
+            //    jObject.Add("select", new JObject
+            //        {
+            //            { "style", new JValue("multi") }
+            //        });
 
-            }
+            //}
 
             //Buttons
             if (dtBuilder.DataTableButtonsFactory != null && dtBuilder.DataTableButtonsFactory.Buttons.Any())
@@ -198,15 +198,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
             //Ajax
             if (dtBuilder.DataTableDataSourceBuilder != null && dtBuilder.DataTableDataSourceBuilder.AjaxBuilder != null)
             {
-                jObject.Add("ajax", new JRaw($@"function (data, callback, settings) {{ 
-    if (_isDtAjaxLoadingDefferd) {{
-        _isDtAjaxLoadingDefferd = false;
-        callback({{data: []}}); // don't fire ajax, just return empty set
-            return; }}
-
-    $.ajax({ dtBuilder.DataTableDataSourceBuilder.ToJToken()});
-    }}"));
-
+                jObject.Add("ajax", new JRaw($@"function (data, callback, settings) {{ DtAjaxHelper.setAjaxForDt(data, callback, settings,{dtBuilder.DataTableDataSourceBuilder.ToJToken()},module_{dtModel.TableName});}}"));
             }
 
             //Pour intialiser la datasource par les items du Model (note: problème avec le html)

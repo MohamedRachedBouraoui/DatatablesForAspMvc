@@ -110,26 +110,6 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
             this.Columns.Add(column);
             return column;
         }
-        public DataTableCommandBuilder SetColumnAsCheckBox(string id)
-        {
-            // I will allow multi checkboxes
-
-            //if (IndexesDic.ContainsKey("CheckBoxColumn"))
-            //{
-            //    throw new Exception($"CheckBoxColumn is already Set.");
-            //}
-
-            //IndexesDic["CheckBoxColumn"] = _currentColumnIndex++;
-
-
-            _currentColumnIndex++;
-
-            DataTableCommandBuilder cmd = new DataTableCommandBuilder();
-
-            cmd.SetCheckBoxColumn(id);
-            this.Columns.Add(cmd);
-            return cmd;
-        }
 
         /// <summary>
         /// Add a column as a command to the factory
@@ -146,7 +126,17 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
 
         public DataTableCommandEditBuilder AddEditRowcCmd(string popupTitle)
         {
+            _currentColumnIndex++;
             DataTableCommandEditBuilder cmd = new DataTableCommandEditBuilder(popupTitle);
+            this.Columns.Add(cmd);
+            return cmd;
+        }
+        public DataTableCheckBoxCommandBuilder AddCheckBoxColumn()
+        {
+            _currentColumnIndex++;
+
+            DataTableCheckBoxCommandBuilder cmd = new DataTableCheckBoxCommandBuilder();
+
             this.Columns.Add(cmd);
             return cmd;
         }
