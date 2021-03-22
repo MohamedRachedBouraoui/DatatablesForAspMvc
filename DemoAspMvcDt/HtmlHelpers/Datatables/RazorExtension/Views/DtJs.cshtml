@@ -3,10 +3,10 @@
 
     module_@Model.TableName = (function () {
 
+             dtModel = @Html.Raw(Json.Encode(Model));
         $(function () {
             
             debugger;
-            let dtModel = @Html.Raw(Json.Encode(Model));
 
             let rawTableName = dtModel.TableName;
 
@@ -24,12 +24,6 @@
             }
 
 
-                    // if true then the "ajax" call will not trigger for the first time:
-                    // See the "ajax" settings for the Datatable in the"DtAjaxHelper.js"
-                    // NB: Must be placed here (just before the "dtCustomConfig")
-                    // Used in 'DtAjaxHelper' --> 'currentModuleName._isDtAjaxLoadingDefferd'
-                    let _isDtAjaxLoadingDefferd  =dtModel.IsDtAjaxLoadingDefferd==='true';
-            debugger;
                      let dtCustomConfig =@Html.Raw(Model.CustomConfigValues);
 
 
@@ -63,11 +57,12 @@
         });//JS block-End
 
         function deferAjaxCall() {
-            return _isDtAjaxLoadingDefferd;
+            return dtModel.IsDtAjaxLoadingDefferd;
         }
         function cancelDeferAjaxCall() {
-            return _isDtAjaxLoadingDefferd=false;
+            return dtModel.IsDtAjaxLoadingDefferd=false;
         }
+
         return {
             deferAjaxCall,
             cancelDeferAjaxCall

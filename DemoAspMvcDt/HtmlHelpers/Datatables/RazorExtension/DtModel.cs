@@ -18,7 +18,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
         public string IdOfHiddenInputHoldingTableData { get; private set; }
         public string NameAttributeForHiddenInputHoldingTableData { get; private set; }
         public string TableClassName { get; private set; }
-        public string IsDtAjaxLoadingDefferd { get; private set; }
+        public bool IsDtAjaxLoadingDefferd { get; private set; }
         public string CustomConfigValues { get; private set; }
         public bool HasDefaultSettings { get; private set; }
         public string DefaultConfigValues { get; private set; }
@@ -78,9 +78,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
 
                 TableClassName = $"{(dtBuilder.TableOptionsFactory.HasClassName ? $" {dtBuilder.TableOptionsFactory.ClassName}" : string.Empty)}",
 
-                IdOfHiddenInputHoldingTableData = $"dt_{dtBuilder.TableName}_data",
-
-                IsDtAjaxLoadingDefferd = "false",
+                IdOfHiddenInputHoldingTableData = $"dt_{dtBuilder.TableName}_data",                
 
                 TableDefaultDatesFormat = dtBuilder.TableOptionsFactory.TableDefaultDatesFormat
             };
@@ -220,7 +218,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
                 && dtBuilder.DataTableDataSourceBuilder.AjaxBuilder != null
                 && dtBuilder.DataTableDataSourceBuilder.AjaxBuilder.IsDtAjaxLoadingDefferd)
             {
-                dtModel.IsDtAjaxLoadingDefferd = "true";
+                dtModel.IsDtAjaxLoadingDefferd =true;
             }
 
             if (dtBuilder.TableOptionsFactory.HasDefaultSettings)

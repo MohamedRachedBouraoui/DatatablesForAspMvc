@@ -36,7 +36,7 @@
         })
         .SetupColumns(cols =>
         {
-           // cols.SetColumnAsCheckBox(nameof(Person.Identifiant)); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
+            // cols.SetColumnAsCheckBox(nameof(Person.Identifiant)); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
             cols.ColumnFor(c => c.Identifiant).ThenHideIt().SetOrderingToAsc(); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
             cols.ColumnFor(c => c.Name).DisableOrdering().WithClassName("test_class_type").ToRenderItUse("bold");//.SetOrderingToDesc();
             cols.ColumnFor(c => c.Age).WithClassName("demo-class");//.SetOrderingToAsc();
@@ -49,7 +49,7 @@
             cols.AddEditRowcCmd("Update Person !!");
             //.FetchViewFrom(Url.Action("GetPersonEditView"));
             //.ValidateBy(Url.Action("ValidateEditPersonEdit"));
-           // cols.AddCheckBoxColumn();
+            // cols.AddCheckBoxColumn();
 
         })
         .Events(e =>
@@ -81,8 +81,7 @@
             .BeforeSendingRequestInvoke("beforeSendFunction")
             .WhenRequestSucceedThenInvoke("onSuccessFunction")
             .IfRequestFailsThenInvoke("onErrorFunction")
-            .ToSetAdditionalDataUse("getPeopleSector")  ;
-            //.DeferLoading();
+            .ToSetAdditionalDataUse("getPeopleSector").DeferLoading();
 
             //ds.SubmitDataWithMultipleHiddenInputs("People", "demoForm"); // TODO auto detect prefix for hidden inputs
             ds.SubmitDataAsJson("list_items", "");
