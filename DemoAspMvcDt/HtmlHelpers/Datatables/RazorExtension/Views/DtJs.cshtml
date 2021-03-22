@@ -2,7 +2,7 @@
 <script>
 
     module_@Model.TableName = (function () {
-            
+
         @if (Model.IsDtAjaxLoadingDefferd){
             <text>
             let isDtAjaxLoadingDefferd = true;
@@ -33,6 +33,15 @@
                 </text>
             }
 
+               @if (Model.HasCheckboxColumns)
+            {
+                <text>
+                //Checkbox Column: must be setup before datatable creation to catch the draw event
+            _jQueryTable.on('draw.dt', function () { DtCheckBoxColumnHelper.setupCheckboxColumns(dtModel, _jQueryTable, rawTableName); });
+                </text>
+            }
+
+
 
                 let dtCustomConfig =@Html.Raw(Model.CustomConfigValues);
 
@@ -43,7 +52,7 @@
                 //Will merge custom and default settings for the datatable:
                 //in this case, default settings will be overwritten by custom ones having same name
                 // To inverse the logic, do this instead: dtCustomConfig = $.extend({},dtCustomConfig, Model.defaultDtConfigValue());
-            
+
                     dtCustomConfig = $.extend({}, @Model.DefaultConfigValues (), dtCustomConfig);
                 </text>
                 }

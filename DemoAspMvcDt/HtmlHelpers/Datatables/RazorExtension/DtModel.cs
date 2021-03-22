@@ -40,6 +40,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
         public bool FetchEditViewFromServerSide { get; private set; }
         public string FetchEditViewFromUrl { get; private set; }
         public string ValidateEditViewByUrl { get; private set; }
+        public bool HasCheckboxColumns { get; private set; }
 
         #endregion
 
@@ -126,6 +127,11 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
                 dtModel.FetchEditViewFromServerSide = dtCommandEditBuilder.IsServerSide;
                 dtModel.FetchEditViewFromUrl = dtCommandEditBuilder.FetchViewFromUrl;
                 dtModel.ValidateEditViewByUrl = dtCommandEditBuilder.ValidateByUrl;
+            }
+            
+            if (dtBuilder.DtaTableColumnsFactory.Columns.Any(c => c.IsCheckBoxColumn))
+            {
+                dtModel.HasCheckboxColumns = true;               
             }
         }
         private static void InitFormConfig<T>(DataTableBuilder<T> dtBuilder, DtModel dtModel) where T : class

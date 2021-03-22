@@ -21,6 +21,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         {
             this.Columns = new List<DataTableColumnBaseBuilder>();
             IndexesDic = new Dictionary<string, int>();
+            checkboxColsList = new List<string>();
             _currentColumnIndex = 0;
         }
 
@@ -32,6 +33,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         //internal List<DataTableCommandBuilder> Commands { get; }
         public Dictionary<string, int> IndexesDic { get; private set; }
 
+        private List<string> checkboxColsList;
         private int _currentColumnIndex;
 
         ///// <summary>
@@ -131,11 +133,16 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
             this.Columns.Add(cmd);
             return cmd;
         }
-        public DataTableCheckBoxCommandBuilder AddCheckBoxColumn()
+        public DataTableCheckBoxCommandBuilder AddCheckBoxColumn(string id)//a unique id for the checkbox to be  able to allow multi checkbox columns
         {
+            if (checkboxColsList.IndexOf(id) > -1) {
+                throw new ArgumentException($"the id {id} for 'CheckBoxColumn' is already used.");
+            }
+            checkboxColsList.Add(id);
+            //NB: id will be set as a class because we can't have multi inputs with the same id
             _currentColumnIndex++;
 
-            DataTableCheckBoxCommandBuilder cmd = new DataTableCheckBoxCommandBuilder();
+            DataTableCheckBoxCommandBuilder cmd = new DataTableCheckBoxCommandBuilder(id);
 
             this.Columns.Add(cmd);
             return cmd;

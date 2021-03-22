@@ -8,11 +8,13 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
     {
         public string TableHeader { get; private set; }
         public PropertyInfo ColumnPropertyInfo { get; private set; }
+        public string CheckBoxColumnId { get; }
 
         private JObject _jObject;
 
-        public DataTableCheckBoxCommandBuilder()
+        public DataTableCheckBoxCommandBuilder(string id)
         {
+            CheckBoxColumnId = id;
             IsCheckBoxColumn = true;
             _jObject = new JObject
             {
@@ -21,7 +23,8 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
                 { "orderable", new JValue(false) },
                 { "searchable", new JValue(false) },
                 { "width", new JValue("15px") },
-                { "render", new JRaw($"function(d,t,r,m){{return DtCheckBoxColumnHelper.render(d,t,r,m);}}") }
+                { "render", new JRaw($"function(d,t,r,m){{return DtCheckBoxColumnHelper.render(d,t,r,m,'{id}');}}") },
+                { "title", new JValue($"<input type='checkbox' id='{id}' class='dt_checkbox_all_{id} dt_checkbox_all_col'>") }
             };
         }
 

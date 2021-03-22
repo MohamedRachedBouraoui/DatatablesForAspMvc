@@ -39,7 +39,8 @@ namespace DemoAspMvcDt
                      "~/Scripts/dt4mvc/dtFormHelper.js",
                      "~/Scripts/dt4mvc/dtEditCmd.js",
                      "~/Scripts/dt4mvc/dtEventsHelper.js",
-                     "~/Scripts/dt4mvc/dtModalHelper.js"
+                     "~/Scripts/dt4mvc/dtModalHelper.js",
+                     "~/Scripts/dt4mvc/dtCheckBoxColumnHelper.js"
                      ));
 
             bundles.Add(new StyleBundle("~/Content/dt4mvc").Include(
