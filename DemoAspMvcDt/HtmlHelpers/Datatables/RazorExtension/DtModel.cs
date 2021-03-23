@@ -67,7 +67,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.RazorExtension
                 //sw.WriteLine(jsMified); // Write the file.
             }
             //TODO: think of reusing same file if not modified
-            var result = $"<div id='div__dt__{TableName}'><script src='{jsPath}?v={DateTime.Now.Ticks}'></script></div>";//Use ?v toget latest version
+            var result = $"<div id='div__dt__{TableName}' class='dt_container'><script src='{jsPath}?v={DateTime.Now.Ticks}'></script></div>";//Use ?v toget latest version
             return result;
         }
         internal static DtModel InitInstance<T>(DataTableBuilder<T> dtBuilder) where T : class

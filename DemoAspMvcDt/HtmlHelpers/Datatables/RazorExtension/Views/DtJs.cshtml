@@ -37,7 +37,7 @@
             {
                 <text>
                 //Checkbox Column: must be setup before datatable creation to catch the draw event
-            _jQueryTable.on('draw.dt', function () { DtCheckBoxColumnHelper.setupCheckboxColumns(dtModel, _jQueryTable, rawTableName); });
+            _jQueryTable.on('draw.dt', function () { DtCheckBoxColumnHelper.setupCheckboxColumns( _jQueryTable); });
                 </text>
             }
 

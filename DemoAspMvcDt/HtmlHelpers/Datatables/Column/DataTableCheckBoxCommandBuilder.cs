@@ -12,19 +12,23 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
 
         private JObject _jObject;
 
-        public DataTableCheckBoxCommandBuilder(string id)
+        public DataTableCheckBoxCommandBuilder(string propName)
         {
-            CheckBoxColumnId = id;
+            CheckBoxColumnId = propName;
             IsCheckBoxColumn = true;
             _jObject = new JObject
             {
-                { "data", new JRaw("null") },
+                { "data", new JValue(propName) },
+                { "name", new JValue(propName) },
+                { "type", new JValue("bool") },
                 {"className", new JValue("dt-command dt-command-checkbox") },
                 { "orderable", new JValue(false) },
                 { "searchable", new JValue(false) },
-                { "width", new JValue("15px") },
-                { "render", new JRaw($"function(d,t,r,m){{return DtCheckBoxColumnHelper.render(d,t,r,m,'{id}');}}") },
-                { "title", new JValue($"<input type='checkbox' id='{id}' class='dt_checkbox_all_{id} dt_checkbox_all_col'>") }
+               // { "width", new JValue("10px") },
+                { "render", new JRaw($"function(d,t,r,m){{return DtCheckBoxColumnHelper.render(d,t,r,m,'{propName}');}}") },
+                { "title", new JValue($"<div for='{propName}'>{propName}</div><div><input type='checkbox' id='{propName}' class='dt_checkbox_all_{propName} dt_checkbox_all_col' data-col-title='{propName}'></div>") }
+                //{ "title", new JValue($"<div class='row'>{propName}</div><div class='row'><div class='col-12'><input type='checkbox' id='{propName}' class='dt_checkbox_all_{propName} dt_checkbox_all_col'></div></div>") }
+                
             };
         }
 

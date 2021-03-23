@@ -1,4 +1,17 @@
-﻿
+﻿/*table*/
+
+.dt_container thead th {
+    text-align: center;
+    padding-top: 0;
+    padding-bottom: 0;
+    vertical-align: central !important;
+}
+.dt_container .dt-command-checkbox {
+    text-align: center;
+}
+.dt_container .dt_checkbox_all_col {
+    margin-top:1em;
+}
 /*Modal*/
 #dt_modal.modal {
     text-align: left !important;

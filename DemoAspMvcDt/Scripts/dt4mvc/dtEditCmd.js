@@ -10,7 +10,7 @@
     function setEditCmd(dtModel, _jQueryTable, rawTableName) {
 
         _jQueryTable.off('click', '.dt-edit-command');
-        // _jQueryTable.find('.dt-edit-command').off();
+
         _jQueryTable.on('click', '.dt-edit-command', function (e) {
             let editBtn = $(e.target);
 
@@ -77,29 +77,38 @@
             let col_name = all_columns[i].name;
             let col = dtTable.column(col_name + ':name');
 
-            if (col.dataSrc() != undefined) {
-                if (col.visible()) { //Proceed visible columns
-                    if (all_columns[i].type === 'bool') {//For checkboxes
+            if (col.dataSrc() == undefined) {
+                continue;
+            }
 
-                        let isCheck = (rowOldData[col_name]).toString() == 'true' ? 'checked="checked"' : '';
+            ////Proceed hidden columns using hidden inputs
+            if (col.visible() === false) {
+                inputs.push(`<input type="hidden" name="${col_name}" value="${rowOldData[col_name]}">`)
+                continue;
+            }
 
-                        inputs.push(` <div class="form-check mb-3">
+            //Proceed visible columns
+            if (all_columns[i].type === 'bool') {//For checkboxes
+
+                let isCheck = (rowOldData[col_name]).toString() == 'true' ? 'checked="checked"' : '';
+                //col-title
+                debugger;
+                let colHeader = $($(col.header()).html()).find('[data-col-title]').data('col-title');
+                colHeader = colHeader || $(col.header()).html();
+
+                //TODO: problème après modification
+                inputs.push(` <div class="form-check mb-3">
     <input type="hidden" name="${col_name}" value="false">
     <input type="checkbox" class="form-check-input" name="${col_name}" id="${col_name}"  ${isCheck} value='true'>
-    <label class="form-check-label" for="${col_name}" style="font-weight: bold;">${$(col.header()).html()}</label>
+    <label class="form-check-label" for="${col_name}" style="font-weight: bold;">${colHeader}</label>
 </div>`);
-                    } else {
+            } else {
 
-                        inputs.push(` <div class="form-group">
+                inputs.push(` <div class="form-group">
     <label for="${col_name}" style="font-weight: bold;">${$(col.header()).html()}</label>
     <input type="${all_columns[i].type}" class="form-control" name="${col_name}" value="${rowOldData[col_name]}" data-val="true" data-val-required="Le champ Name est requis.">
     <span class="field-validation-valid text-danger" data-valmsg-for="${col_name}" data-valmsg-replace="true"></span>
   </div>`);
-                    }
-                }
-                else { ////Proceed hidden columns using hidden inputs
-                    inputs.push(`<input type="hidden" name="${col_name}" value="${rowOldData[col_name]}">`)
-                }
             }
         }
 
@@ -113,7 +122,7 @@
         html = `<form class="dt-edit-form">${html}</form>`;
 
         DtModalHelper.show(dtModel.EditPopupTitle, html, function (e) {
-            
+
             let form = $('.dt-edit-form');
             $.validator.unobtrusive.parse(form);
             if (form.valid() == false) {//client side validation
@@ -140,6 +149,7 @@
 
                 // At this level, our form is validated in the client side and/or the server side
                 let formData = DtFormHelper.getFormData(form);
+                debugger;
                 updateRow(rawTableName, rowIndex, formData);
                 DtModalHelper.hide();
             }

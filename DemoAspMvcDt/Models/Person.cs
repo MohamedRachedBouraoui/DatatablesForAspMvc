@@ -24,6 +24,8 @@ namespace DemoAspMvcDt.Models
 
         public string Progress { get; set; }
         public bool IsMaried { get; set; }
+        public bool CheckBox1 { get; set; }
+        public bool CheckBox2 { get; set; }
     }
 
     public class ValidateurPerson : AbstractValidator<Person>

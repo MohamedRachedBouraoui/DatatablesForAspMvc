@@ -101,7 +101,7 @@ namespace DemoAspMvcDt.Controllers
             List<bool> civil = new List<bool> { true, false };
             var people = new List<Person>();
             int userIds = 1;
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 500; i++)
             {
                 var fakePerson = new Faker<Person>()
                  .RuleFor(u => u.Identifiant, f => userIds++)
@@ -109,6 +109,8 @@ namespace DemoAspMvcDt.Controllers
                  .RuleFor(u => u.DOB, (f, u) => f.Date.Past())
                  .RuleFor(u => u.Age, f => f.Random.Number(0, 100))
                  .RuleFor(o => o.IsMaried, f => f.PickRandom(civil))
+                 .RuleFor(o => o.CheckBox1, f => f.PickRandom(civil))
+                 .RuleFor(o => o.CheckBox2, f => f.PickRandom(civil))
                  .RuleFor(u => u.Progress, f => f.Random.Number(0, 100).ToString());
                 people.Add(fakePerson.Generate());
             }

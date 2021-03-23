@@ -133,6 +133,25 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
             this.Columns.Add(cmd);
             return cmd;
         }
+        public DataTableCheckBoxCommandBuilder AddCheckBoxColumn<T>(Expression<Func<TModel, T>> expression)//a unique id for the checkbox to be  able to allow multi checkbox columns
+        {
+            var propertyInfo = PropertyHelpers.GetPropertyInfo(expression);
+            var propName = propertyInfo.Name;
+            if (checkboxColsList.IndexOf(propName) > -1) {
+                throw new ArgumentException($"the id {propName} for 'CheckBoxColumn' is already used.");
+            }
+            checkboxColsList.Add(propName);
+            //NB: id will be set as a class because we can't have multi inputs with the same id
+            _currentColumnIndex++;
+
+            DataTableCheckBoxCommandBuilder cmd = new DataTableCheckBoxCommandBuilder(propName);
+
+            this.Columns.Add(cmd);
+            return cmd;
+        } 
+        
+       
+        
         public DataTableCheckBoxCommandBuilder AddCheckBoxColumn(string id)//a unique id for the checkbox to be  able to allow multi checkbox columns
         {
             if (checkboxColsList.IndexOf(id) > -1) {

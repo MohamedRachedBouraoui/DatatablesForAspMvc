@@ -153,6 +153,17 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Table
             _jObject.Add("rowId", new JValue(propertyInfo.Name));
             return this;
         }
+        
+        public TableOptionsFactory<TModel> GoupBy<T>(Expression<Func<TModel, T>> expression)
+        {
+            var propertyInfo = PropertyHelpers.GetPropertyInfo(expression);
+            _jObject.Remove("rowGroup");
+            _jObject.Add("rowGroup", new JObject
+            {                
+                { "dataSrc", new JValue(propertyInfo.Name) }
+            });
+            return this;
+        }
 
         public TableOptionsFactory<TModel> RowId(string propName)
         {

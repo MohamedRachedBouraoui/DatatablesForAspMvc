@@ -222,6 +222,7 @@
     <Content Include="Content\dt4mvc\vendors\dt_buttons\buttons.foundation.min.css" />
     <Content Include="Content\dt4mvc\vendors\dt_buttons\buttons.jqueryui.min.css" />
     <Content Include="Content\dt4mvc\vendors\dt_buttons\buttons.semanticui.min.css" />
+    <Content Include="Content\dt4mvc\vendors\rowReorder.dataTables.min.css" />
     <Content Include="Content\fontawesome\all.css" />
     <Content Include="Content\fontawesome\font-awesome.css" />
     <Content Include="Content\fontawesome\font-awesome.min.css" />
@@ -242,6 +243,7 @@
     <Content Include="Scripts\dt4mvc\dtAjaxHelper.js" />
     <Content Include="Scripts\dt4mvc\DataTableApi.js" />
     <Content Include="Scripts\dt4mvc\vendors\datatables.min.js" />
+    <Content Include="Scripts\dt4mvc\vendors\dataTables.rowReorder.min.js" />
     <Content Include="Scripts\dt4mvc\vendors\dataTables.searchHighlight.min.js" />
     <Content Include="Scripts\dt4mvc\vendors\dataTables.select.min.js" />
     <Content Include="Scripts\dt4mvc\dt_buttons\buttons.bootstrap.min.js" />
