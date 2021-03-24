@@ -7,7 +7,7 @@
         .TableOptions(o =>
         {
             o.CreateApiInstance("example_render_dt");
-            o.EnablesearchHighlight();
+            o.EnableSearchHighlighting();
             o.SetClassName(" table table-striped table-hover table-bordered dataTable ");
             o.DisableColumnsAutoWidth();
             //o.EnableServerSideProcessing();
@@ -17,7 +17,7 @@
             //o.DisableOrdering();
             //o.DisableInfoDisplaying();
             //o.DisablePaging();
-            // o.EnableColReordering(1,1);//TODO: Enhance
+            o.EnableColReordering(0,3);//TODO: Enhance
             //                           // o.EnableFixedColumns();
             o.EnableYScrolling("400px");
             o.DisplayProcessingMessage();
@@ -26,7 +26,7 @@
             // o.DisableColumnsAutoWidth();
             //o.DisplayFooters();
             // o.EnableDeferRendering();
-            o.HandleInitCompletionWith("onInitComplete");
+            o.OnInitComplet("onInitComplete");
             o.RowId(c=>c.Identifiant);
             //o.SetupPagingLengthMenu(c =>
             //{
@@ -34,18 +34,18 @@
             //    c.Add(-1, "All");
             //});
             //o.EnableServerSideProcessing(); // TODO: how to send datatable data with custom data while using Ajax
-            o.GoupBy(c => c.DOB);
+           // o.GoupBy(c => c.DOB);
         })
         .SetupColumns(cols =>
         {
             // cols.SetColumnAsCheckBox(nameof(Person.Identifiant)); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
-            cols.ColumnFor(c => c.Identifiant).ThenHideIt();//.SetOrderingToAsc(); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
-            cols.ColumnFor(c => c.Name).SetOrderingToAsc().WithClassName("test_class_type").ToRenderItUse("bold");//.SetOrderingToDesc();
-            cols.ColumnFor(c => c.Age).WithClassName("demo-class");//.SetOrderingToAsc();
+            cols.ColumnFor(c => c.Identifiant).Hide();//.SetOrderingToAsc(); // TODO: allow Html Attributes (ref: https://app.pluralsight.com/course-player?clipId=9fdf2722-7bdf-402d-a208-17dc4a7929ba)
+            cols.ColumnFor(c => c.Name).OrderAsc().ClassName("test_class_type").Render("bold");//.SetOrderingToDesc();
+            cols.ColumnFor(c => c.Age).ClassName("demo-class");//.SetOrderingToAsc();
 
             cols.ColumnFor(c => c.DOB);//.ButDisableSearching().SetTheHeaderTextTo("D_O_B");
-            cols.ColumnFor(c => c.IsMaried).SetTheHeaderTextTo("Married").ToRenderItUse("formatIsMaried");
-            cols.ColumnFor(c => c.Progress).RenderItAsProgressBar();
+            cols.ColumnFor(c => c.IsMaried).Title("Married").Render("formatIsMaried");
+            cols.ColumnFor(c => c.Progress).AsProgressBar();
 
             cols.SetColumnAsCommand(() => "cmdEditPerson").Width("13%");//.OnClick("handleCmdEditPerson") ;//TODO: width && .Title("");
 
@@ -58,19 +58,19 @@
         })
         .Events(e =>
         {
-            e.WhenARowIsAddedThenInvoke("onRowAdded");
+            e.OnRowAdded("onRowAdded");
 
-            e.BeforeAddingARowInvoke("onRowAdding");
+            e.OnRowAdding("onRowAdding");
 
-            e.BeforeRemovingARowInvoke("onRowRemoving");
-            e.WhenARowIsRemovedThenInvoke("onRowRemoved");
+            e.OnRowRemoving("onRowRemoving");
+            e.OnRowRemoved("onRowRemoved");
 
-            e.BeforeUpdatingARowInvoke("OnRowUpdating");
-            e.WhenARowIsUpdatedThenInvoke("OnRowUpdated");
+            e.OnRowApdating("OnRowUpdating");
+            e.OnRowUpdated("OnRowUpdated");
 
-            e.WhenARowIsSelectedThenInvoke("OnRowSelected");
-            e.WhenARowIsDeselectedThenInvoke("OnRowDeselected");
-            e.BeforeSelectingARowInvoke("beforeRowSelection");
+            e.OnRowSelected("OnRowSelected");
+            e.OnRowDeselected("OnRowDeselected");
+            e.OnRowSelecting("beforeRowSelection");
 
         })
         .Buttons(b => {
@@ -82,9 +82,9 @@
 
             // ds.Data(@Model.People);//TODO-Set items as javascript array to dataTable (for performance)
             ds.HandleDataByAjax("/Home/GetPeople")
-            .BeforeSendingRequestInvoke("beforeSendFunction")
-            .WhenRequestSucceedThenInvoke("onSuccessFunction")
-            .IfRequestFailsThenInvoke("onErrorFunction")
+            .OnRequestSending("beforeSendFunction")
+            .OnRequestSuccess("onSuccessFunction")
+            .OnRequestFail("onErrorFunction")
             .ToSetAdditionalDataUse("getPeopleSector");//.DeferLoading();
 
             ds.SubmitDataWithMultipleHiddenInputs("People", "demoForm"); // TODO auto detect prefix for hidden inputs

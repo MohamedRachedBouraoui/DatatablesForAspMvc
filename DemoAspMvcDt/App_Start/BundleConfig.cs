@@ -21,6 +21,7 @@ namespace DemoAspMvcDt
                      "~/Scripts/dt4mvc/vendors/jquery.highlight.js",
                      "~/Scripts/dt4mvc/vendors/dataTables.searchHighlight.min.js",
                      "~/Scripts/dt4mvc/vendors/dataTables.rowReorder.min.js",
+                     "~/Scripts/dt4mvc/vendors/dataTables.colReorder.min.js",
 
                      "~/Scripts/dt4mvc/dt_buttons/dataTables.buttons.min.js",
                      "~/Scripts/dt4mvc/dt_buttons/buttons.bootstrap4.min.js",
@@ -51,6 +52,7 @@ namespace DemoAspMvcDt
                      "~/Content/dt4mvc/vendors/dataTables.checkboxes.css",
                      "~/Content/dt4mvc/vendors/dataTables.searchHighlight.css",
                      "~/Content/dt4mvc/vendors/rowReorder.dataTables.min.css",
+                     "~/Content/dt4mvc/vendors/colReorder.dataTables.min.css",
                      "~/Content/dt4mvc/dt_style.css"));
 
 

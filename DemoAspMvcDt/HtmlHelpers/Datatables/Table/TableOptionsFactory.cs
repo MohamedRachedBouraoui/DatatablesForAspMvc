@@ -35,7 +35,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Table
             return this;
         }
 
-        public TableOptionsFactory<TModel> EnablesearchHighlight()
+        public TableOptionsFactory<TModel> EnableSearchHighlighting()
         {
             _jObject.Add("searchHighlight", new JValue(true));
 
@@ -286,7 +286,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Table
             return this;
         }
 
-        public TableOptionsFactory<TModel> HandleInitCompletionWith(string func)
+        public TableOptionsFactory<TModel> OnInitComplet(string func)
         {
             _jObject.Add("initComplete", new JRaw($"function(){{ {func}(this.api());}}"));
             return this;

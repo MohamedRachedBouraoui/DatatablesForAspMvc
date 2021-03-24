@@ -88,7 +88,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         /// </summary>
         /// <param name="function"></param>
         /// <returns></returns>
-        public DataTableColumnBuilder WhenClickedInvoke(string function)
+        public DataTableColumnBuilder OnClick(string function)
         {
             Click = function;
             return this;
@@ -99,7 +99,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         /// </summary>
         /// <param name="className"></param>
         /// <returns></returns>
-        public DataTableColumnBuilder WithClassName(string className)
+        public DataTableColumnBuilder ClassName(string className)
         {
             _jObject.Add("className", new JValue(className));
             return this;
@@ -203,7 +203,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         /// </summary>
         /// <param name="function"></param>
         /// <returns></returns>
-        public DataTableColumnBuilder ToRenderItUse(string function)
+        public DataTableColumnBuilder Render(string function)
         {
 
             _jObject.Remove("render");
@@ -216,7 +216,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         /// </summary>
         /// <param name="searchable"></param>
         /// <returns></returns>
-        public DataTableColumnBuilder ButDisableSearching()
+        public DataTableColumnBuilder DisableSearching()
         {
             _jObject.Add("searchable", new JValue(false));
             return this;
@@ -227,7 +227,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         /// </summary>
         /// <param name="title"></param>
         /// <returns></returns>
-        public DataTableColumnBuilder SetTheHeaderTextTo(string title)
+        public DataTableColumnBuilder Title(string title)
         {
             if (!string.IsNullOrEmpty(title))
             {
@@ -260,7 +260,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         /// </summary>
         /// <param name="visible"></param>
         /// <returns></returns>
-        public DataTableColumnBuilder ThenHideIt()
+        public DataTableColumnBuilder Hide()
         {
             IsHiden = true;
             _jObject.Add("visible", new JValue(false));
@@ -272,26 +272,26 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
         /// </summary>
         /// <param name="width"></param>
         /// <returns></returns>
-        public DataTableColumnBuilder SetWidthTo(string width)
+        public DataTableColumnBuilder Width(string width)
         {
             if (!string.IsNullOrEmpty(width)) _jObject.Add("width", new JValue(width));
             return this;
         }
 
-        public DataTableColumnBuilder RenderItAsProgressBar()
+        public DataTableColumnBuilder AsProgressBar()
         {
             _jObject.Remove("render");
             _jObject.Add("render", new JRaw("$.fn.dataTable.render.percentBar('round','#FFF', '#269ABC', '#31B0D5', '#286090', 1, 'groove')"));
             return this;
         }
 
-        public DataTableColumnBuilder SetOrderingToAsc()
+        public DataTableColumnBuilder OrderAsc()
         {
             OrderDirection = "asc";
             return this;
         }
 
-        public DataTableColumnBuilder SetOrderingToDesc()
+        public DataTableColumnBuilder OrderDesc()
         {
             OrderDirection = "desc";
             return this;

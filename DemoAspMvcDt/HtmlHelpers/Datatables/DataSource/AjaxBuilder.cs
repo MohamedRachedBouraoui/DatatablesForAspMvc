@@ -32,7 +32,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.DataSource
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public AjaxBuilder WithGetMethod()
+        public AjaxBuilder UseGetMethod()
         {
             jObject.Remove("method");
             jObject.Add("method", new JValue("GET"));
@@ -44,7 +44,7 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.DataSource
         /// </summary>
         /// <param name="method"></param>
         /// <returns></returns>
-        public AjaxBuilder WithPostMethod()
+        public AjaxBuilder UsePostMethod()
         {
             jObject.Remove("method");
             jObject.Add("method", new JValue("POST"));
@@ -73,20 +73,20 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.DataSource
             return this;
         }
 
-        public AjaxBuilder BeforeSendingRequestInvoke(string beforeSendFunc)
+        public AjaxBuilder OnRequestSending(string beforeSendFunc)
         {
             jObject.Add("beforeSend", new JRaw($"function(xhr, opts){{ {beforeSendFunc}(xhr, opts);}}"));
             return this;
         }
 
-        public AjaxBuilder WhenRequestSucceedThenInvoke(string onSuccessFumctionFunc)
+        public AjaxBuilder OnRequestSuccess(string onSuccessFumctionFunc)
         {
             jObject.Remove("success");
             jObject.Add("success", new JRaw($"function(data){{  DtDatesHelper.dtConvertDates(data,$('#{tableName}').attr('default_date_time_format')); callback(data);{onSuccessFumctionFunc}(data);}}"));
             return this;
         }
 
-        public AjaxBuilder IfRequestFailsThenInvoke(string onErrorFunction)
+        public AjaxBuilder OnRequestFail(string onErrorFunction)
         {
             jObject.Add("error", new JRaw($"function(event){{ {onErrorFunction}(event);}}"));
             return this;

@@ -214,6 +214,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\dt4mvc\vendors\colReorder.dataTables.min.css" />
     <Content Include="Content\dt4mvc\vendors\datatables.min.css" />
     <Content Include="Content\dt4mvc\vendors\dataTables.searchHighlight.css" />
     <Content Include="Content\dt4mvc\vendors\dt_buttons\buttons.bootstrap.min.css" />
@@ -242,6 +243,7 @@
     <Content Include="Scripts\dt4mvc\dtModalHelper.js" />
     <Content Include="Scripts\dt4mvc\dtAjaxHelper.js" />
     <Content Include="Scripts\dt4mvc\DataTableApi.js" />
+    <Content Include="Scripts\dt4mvc\vendors\dataTables.colReorder.min.js" />
     <Content Include="Scripts\dt4mvc\vendors\datatables.min.js" />
     <Content Include="Scripts\dt4mvc\vendors\dataTables.rowReorder.min.js" />
     <Content Include="Scripts\dt4mvc\vendors\dataTables.searchHighlight.min.js" />

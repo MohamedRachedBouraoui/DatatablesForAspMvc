@@ -46,48 +46,48 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Events
             }
             this.selectEvents[key].Add(fn);
         }
-        public void WhenARowIsAddedThenInvoke(string func)
+        public void OnRowAdded(string func)
         {
             this.Add("new_row_added.dt", "(e)", func);
         }
-        public void BeforeAddingARowInvoke(string func)
+        public void OnRowAdding(string func)
         {
             this.Add("new_row_adding.dt", "(e)", func);
         }
 
-        public void BeforeRemovingARowInvoke(string func)
+        public void OnRowRemoving(string func)
         {
             this.Add("row_removing.dt", "(e)", func);
         }
-        public void WhenARowIsRemovedThenInvoke(string func)
+        public void OnRowRemoved(string func)
         {
             this.Add("row_removed.dt", "(e)", func);
         }
-        public void BeforeUpdatingARowInvoke(string func)
+        public void OnRowApdating(string func)
         {
             this.Add("row_updating.dt", "(e)", func);
         }
-        public void WhenARowIsUpdatedThenInvoke(string func)
+        public void OnRowUpdated(string func)
         {
             this.Add("row_updated.dt", "(e)", func);
         }
         
-        public void WhenARowIsSelectedThenInvoke(string func)
+        public void OnRowSelected(string func)
         {
             this.AddSelection("select", "(e, dt, type, indexes)", func);
         }
 
-        public void WhenARowIsDeselectedThenInvoke(string func)
+        public void OnRowDeselected(string func)
         {
             this.AddSelection("deselect", "(e, dt, type, indexes)", func);
         }
 
-        public void WhenTableIsDrawnThenInvoke(string func)
+        public void OnTableDraw(string func)
         {
             this.Add("draw.dt", "(e)", func);
         }
 
-        public void BeforeSelectingARowInvoke(string func)
+        public void OnRowSelecting(string func)
         {
             this.AddSelection("user-select", "(e, dt, type, cell, originalEvent)", func);
         }
