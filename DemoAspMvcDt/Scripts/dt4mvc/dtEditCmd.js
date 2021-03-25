@@ -1,11 +1,6 @@
 ﻿DtEditCmd = (function () {
-
-    const TD_UID_DATA = 'td-uid';
-    const TD_UID_PROP = 'td_uid';
+   
     const TD_ROW_INDEX_DATA = 'row-index';
-
-    let rowsUidDic = {};
-    let rowUid = 1;
 
     function setEditCmd(dtModel, _jQueryTable, rawTableName) {
 
@@ -38,13 +33,13 @@
         let dt_api = DtApi.getInstance(_jQueryTable);
         let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
 
-        let currentRowUid = editBtn.data(TD_UID_DATA);
+        let currentRowUid = editBtn.data(DtUid.getInstance(_jQueryTable).TD_UID_DATA);
         if (currentRowUid == undefined) {
-            rowOldData[TD_UID_PROP] = setRowUid(rowOldData);
+            rowOldData[DtUid.getInstance(_jQueryTable).TD_UID_PROP] = DtUid.getInstance(_jQueryTable).setRowUid(rowOldData);
         }
 
         DtAjaxHelper.fetchView(dtModel.FetchEditViewFromUrl, rowOldData, function (html) {
-            displayHtmlInModalAndHandleFormSubmit(html, dtModel, _jQueryTable, rowIndex, rowOldData[TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
+            displayHtmlInModalAndHandleFormSubmit(html, dtModel, _jQueryTable, rowIndex, rowOldData[DtUid.getInstance(_jQueryTable).TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
 
         });
     }
@@ -57,9 +52,9 @@
         let dt_api = DtApi.getInstance(_jQueryTable);
         let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
 
-        let currentRowUud = editBtn.data(TD_UID_DATA);
+        let currentRowUud = editBtn.data(DtUid.getInstance(_jQueryTable).TD_UID_DATA);
         if (currentRowUud == undefined) {
-            rowOldData[TD_UID_PROP] = setRowUid(rowOldData);
+            rowOldData[DtUid.getInstance(_jQueryTable).TD_UID_PROP] = DtUid.getInstance(_jQueryTable).setRowUid(rowOldData);
         }
         let html = buildHtmlForEdition(rowOldData, _jQueryTable);
 
@@ -71,7 +66,7 @@
         let dtTable = _jQueryTable.DataTable();
         let all_columns = dtTable.settings().init().columns;
 
-        let inputs = [`<input type="hidden" name="${TD_UID_PROP}" value="${rowOldData.td_uid}">`];
+        let inputs = [`<input type="hidden" name="${DtUid.getInstance(_jQueryTable).TD_UID_PROP}" value="${rowOldData.td_uid}">`];
 
         for (let i in all_columns) {
             let col_name = all_columns[i].name;
@@ -92,7 +87,7 @@
 
                 let isCheck = (rowOldData[col_name]).toString() == 'true' ? 'checked="checked"' : '';
                 //col-title
-                debugger;
+                
                 let colHeader = $($(col.header()).html()).find('[data-col-title]').data('col-title');
                 colHeader = colHeader || $(col.header()).html();
 
@@ -149,7 +144,7 @@
 
                 // At this level, our form is validated in the client side and/or the server side
                 let formData = DtFormHelper.getFormData(form);
-                debugger;
+                
                 updateRow(_jQueryTable, rowIndex, formData);
                 DtModalHelper.hide();
             }
@@ -157,21 +152,21 @@
         }, modalSize);
     }
 
-    function setRowUid(rowOldData) {
-        rowsUidDic[rowUid.toString()] = rowOldData;
-        return rowUid++;
-    }
+    //function setRowUid(rowOldData) {
+    //    rowsUidDic[rowUid.toString()] = rowOldData;
+    //    return rowUid++;
+    //}
 
-    function getOldRowDataByRowUid(rowUid) {
-        let olddata = rowsUidDic[rowUid];
-        return olddata;
-    }
+    //function getOldRowDataByRowUid(rowUid) {
+    //    let olddata = rowsUidDic[rowUid];
+    //    return olddata;
+    //}
 
     function handleCancelEditRowCmd(editBtn, _jQueryTable) {
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
-        let currentRowUud = editBtn.data(TD_UID_DATA);
-        let oldRowData = getOldRowDataByRowUid(currentRowUud);
+        let currentRowUud = editBtn.data(DtUid.getInstance(_jQueryTable).TD_UID_DATA);
+        let oldRowData = DtUid.getInstance(_jQueryTable). getOldRowDataByRowUid(currentRowUud);
 
         resetRow(_jQueryTable, rowIndex, oldRowData);
     }

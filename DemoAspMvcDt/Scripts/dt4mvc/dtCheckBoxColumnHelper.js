@@ -1,4 +1,5 @@
 ﻿DtCheckBoxColumnHelper = (function () {
+
     const DT_CHECKBOX_COLUMN_CHANGED_EVENT = 'dt.checkbox.column.changed';
     const DT_CHECKBOX_ALL = 'dt_checkbox_all_';
     const CLASS_FOR_DT_CHECKBOX_ALL = '.' +DT_CHECKBOX_ALL;
@@ -57,7 +58,6 @@
         //on change
         $(CLASS_FOR_DT_CHECKBOX_ALL).change(function () {
 
-
             let jqueryThis = $(this);
 
             let idClass = getCheckboxAllIdClass(this);
@@ -74,7 +74,10 @@
             let checkBoxId = jqueryThis.attr('id');
 
             for (var i = 0; i < rows.length; i++) {
+                if (rows[i][checkBoxId].toString() !== isChecked.toString()) { // update only different rows
                 rows[i][checkBoxId] = isChecked;
+                //rows[i].dt_row_uid = isChecked;
+                }
             }
         });
     }

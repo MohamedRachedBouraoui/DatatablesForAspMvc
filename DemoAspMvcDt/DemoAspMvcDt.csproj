@@ -244,6 +244,7 @@
     <Content Include="Scripts\dt4mvc\dtModalHelper.js" />
     <Content Include="Scripts\dt4mvc\dtAjaxHelper.js" />
     <Content Include="Scripts\dt4mvc\DataTableApi.js" />
+    <Content Include="Scripts\dt4mvc\dtUidHelper.js" />
     <Content Include="Scripts\dt4mvc\vendors\dataTables.colReorder.min.js" />
     <Content Include="Scripts\dt4mvc\vendors\datatables.min.js" />
     <Content Include="Scripts\dt4mvc\vendors\dataTables.rowReorder.min.js" />

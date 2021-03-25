@@ -21,6 +21,7 @@ namespace DemoAspMvcDt
                      "~/Scripts/dt4mvc/dtLogger.js",
                      "~/Scripts/dt4mvc/dtDatesHelper.js",
                      "~/Scripts/dt4mvc/DataTableApi.js",
+                     "~/Scripts/dt4mvc/dtUidHelper.js",
                      "~/Scripts/dt4mvc/dtAjaxHelper.js",
                      "~/Scripts/dt4mvc/dtTableHtmlHelper.js",
                      "~/Scripts/dt4mvc/dtFormHelper.js",
