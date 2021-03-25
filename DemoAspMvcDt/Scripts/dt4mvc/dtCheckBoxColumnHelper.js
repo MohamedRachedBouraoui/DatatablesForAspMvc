@@ -1,12 +1,17 @@
 ﻿DtCheckBoxColumnHelper = (function () {
     const DT_CHECKBOX_COLUMN_CHANGED_EVENT = 'dt.checkbox.column.changed';
+    const DT_CHECKBOX_ALL = 'dt_checkbox_all_';
+    const CLASS_FOR_DT_CHECKBOX_ALL = '.' +DT_CHECKBOX_ALL;
+    const DT_CHECKBOX_COL = 'dt_checkbox_col_';
+    const CLASS_FOR_DT_CHECKBOX_COL = '.' + DT_CHECKBOX_COL;
 
     function render(d, t, row, meta, colId) {
         DtLogger.log('DtCheckBoxColumnHelper.render');
+
         if (row[colId].toString() == 'true') {
-            return `<input type="checkbox" class='dt_checkbox_col_${colId} dt_checkbox_col' checked value="true" data-row-index='${meta.row}'>`;
+            return `<input type="checkbox" class='${DT_CHECKBOX_COL}${colId} ${DT_CHECKBOX_COL}' checked value="true" data-row-index='${meta.row}'>`;
         }
-        return `<input  type="checkbox" class='dt_checkbox_col_${colId} dt_checkbox_col' value="false" data-row-index='${meta.row}'>`;
+        return `<input  type="checkbox" class='${DT_CHECKBOX_COL}${colId} ${DT_CHECKBOX_COL}' value="false" data-row-index='${meta.row}'>`;
     }
 
     function calculateTotalSelected(rows, _checkBoxId) {
@@ -21,10 +26,23 @@
         return totalSelected;
     }
 
+    function getCheckboxAllIdClass(htmlElement) {
+        let classes = htmlElement.className;
+        let _classArray = classes.split(' ');
+
+        for (var i = 0; i < _classArray.length; i++) {
+            if (_classArray[i].startsWith(DT_CHECKBOX_ALL) === true) {
+                return _classArray[i];
+            }
+        }
+
+        return null;
+    }
+
     function setupHeaders(_jQueryTable) {
 
         //setup status with values comming from server
-        $('.dt_checkbox_all_col').each(function () {
+        $(CLASS_FOR_DT_CHECKBOX_ALL).each(function () {
             let jqueryThis = $(this);
 
             let _checkBoxId = jqueryThis.attr('id');
@@ -35,33 +53,29 @@
             updateHeaderStatus(jqueryThis, totalSelected, rows.length)
 
         });
-
-        $('.dt_checkbox_all_col').change(function () {//on change
+        
+        //on change
+        $(CLASS_FOR_DT_CHECKBOX_ALL).change(function () {
 
 
             let jqueryThis = $(this);
-            let classes = this.className;
-            let _classArray = classes.split(' ');
 
-            for (var i = 0; i < _classArray.length; i++) {
-                if (_classArray[i].startsWith('dt_checkbox_all_') === true) {
-                    let _class = _classArray[i];
-                    let _classChildren = _class.replace('dt_checkbox_all_', 'dt_checkbox_col_');
+            let idClass = getCheckboxAllIdClass(this);
 
-                    $('.' + _classChildren).prop("checked", jqueryThis.is(':checked'));//check/uncheck rows
-                    break;
-                }
-            }
+            let _classChildren = idClass.replace(DT_CHECKBOX_ALL, DT_CHECKBOX_COL);
+
+            let isChecked = jqueryThis.is(':checked');
+
+            $('.' + _classChildren).prop("checked", isChecked);//check/uncheck rows
 
             let dt = _jQueryTable.DataTable();//update dt_table rows
             let rows = dt.rows().data().toArray();
-            for (var i = 0; i < rows.length; i++) {
-                let checkBoxId = jqueryThis.attr('id');
-                let val = jqueryThis.is(':checked');
 
-                rows[i][checkBoxId] = val;
+            let checkBoxId = jqueryThis.attr('id');
+
+            for (var i = 0; i < rows.length; i++) {
+                rows[i][checkBoxId] = isChecked;
             }
-            // dt.rows().invalidate();
         });
     }
 
@@ -87,11 +101,8 @@
 
     function setupRows(_jQueryTable) {
 
-        
-
-
         //On col-checkbox change
-        $('.dt_checkbox_col').change(function () {
+        $(CLASS_FOR_DT_CHECKBOX_COL).change(function () {
 
             let jqueryThis = $(this);
 
@@ -108,14 +119,14 @@
 
             for (var i = 0; i < _classArray.length; i++) {
 
-                if (_classArray[i].startsWith('dt_checkbox_col_') === true) {
+                if (_classArray[i].startsWith(DT_CHECKBOX_COL) === true) {
                     let _class = _classArray[i];
-                    let _checkBoxId = _class.replace('dt_checkbox_col_', '');
+                    let _checkBoxId = _class.replace(DT_CHECKBOX_COL, '');
                     rowdata[_checkBoxId] = jqueryThis.is(':checked');//upate data value
                     rowdata.isDirty = true;
                     let totalSelected = calculateTotalSelected(rows, _checkBoxId);
 
-                    let _classHeader = $('.' + _class.replace('dt_checkbox_col_', 'dt_checkbox_all_'));
+                    let _classHeader = $('.' + _class.replace(DT_CHECKBOX_COL, DT_CHECKBOX_ALL));
                     updateHeaderStatus($(_classHeader), totalSelected, rows.length);
                     break;
                 }
@@ -125,7 +136,7 @@
 
     function setupRowsForNewValues(_jQueryTable) {
         // default status
-        $('.dt_checkbox_col').each(function () {
+        $(CLASS_FOR_DT_CHECKBOX_COL).each(function () {
 
             let jqueryThis = $(this);
 
@@ -139,9 +150,9 @@
 
             for (var i = 0; i < _classArray.length; i++) {
 
-                if (_classArray[i].startsWith('dt_checkbox_col_') === true) {
+                if (_classArray[i].startsWith(DT_CHECKBOX_COL) === true) {
                     let _class = _classArray[i];
-                    let _checkBoxId = _class.replace('dt_checkbox_col_', '');
+                    let _checkBoxId = _class.replace(DT_CHECKBOX_COL, '');
                     let isChecked = rowdata[_checkBoxId].toString() === 'true';
                     jqueryThis.prop('checked', isChecked);
                     break;

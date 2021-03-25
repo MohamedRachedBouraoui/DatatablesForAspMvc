@@ -101,7 +101,7 @@ namespace DemoAspMvcDt.Controllers
             List<bool> civil = new List<bool> { true, false };
             var people = new List<Person>();
             int userIds = 1;
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 5; i++)
             {
                 var fakePerson = new Faker<Person>()
                  .RuleFor(u => u.Identifiant, f => userIds++)

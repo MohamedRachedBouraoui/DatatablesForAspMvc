@@ -22,13 +22,9 @@ namespace DemoAspMvcDt.HtmlHelpers.Datatables.Column
                 { "name", new JValue(propName) },
                 { "type", new JValue("bool") },
                 {"className", new JValue("dt-command dt-command-checkbox") },
-                { "orderable", new JValue(false) },
-                //{ "searchable", new JValue(false) },
-               // { "width", new JValue("10px") },
+                { "orderable", new JValue(false) },                
                 { "render", new JRaw($"function(d,t,r,m){{return DtCheckBoxColumnHelper.render(d,t,r,m,'{propName}');}}") },
-                { "title", new JValue($"<div for='{propName}'>{propName}</div><div><input type='checkbox' id='{propName}' class='dt_checkbox_all_{propName} dt_checkbox_all_col' data-col-title='{propName}'></div>") }
-                //{ "title", new JValue($"<div class='row'>{propName}</div><div class='row'><div class='col-12'><input type='checkbox' id='{propName}' class='dt_checkbox_all_{propName} dt_checkbox_all_col'></div></div>") }
-                
+                { "title", new JValue($"<div for='{propName}'>{propName}</div><div><input type='checkbox' id='{propName}' class='dt_checkbox_all_{propName} dt_checkbox_all_' data-col-title='{propName}'></div>") }
             };
         }
 
