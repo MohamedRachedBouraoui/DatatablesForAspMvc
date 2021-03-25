@@ -1,11 +1,13 @@
 ﻿var DtUid = (function () { // Single Uid Manager by jquery table
 
+    const TD_UID_DATA = 'td-uid';
+    const TD_UID_PROP = 'td_uid';
+
     var instances = {};
 
     function dtUidInit() {
 
-        const TD_UID_DATA = 'td-uid';
-        const TD_UID_PROP = 'td_uid';
+       
 
         var rowsUidDic = {};
         var rowUid = 1;
@@ -24,15 +26,14 @@
             return olddata;
         }
 
-        return {
-            TD_UID_DATA,
-            TD_UID_PROP,
+        return {            
             setRowUid,
             getOldRowDataByRowUid
         };
     };
     return {
-
+        TD_UID_DATA,
+        TD_UID_PROP,
         getInstance: function (jqueryTable) {
             if (jqueryTable == undefined || jqueryTable == null) {
                 throw 'A Jquery reference to the table is needed.';

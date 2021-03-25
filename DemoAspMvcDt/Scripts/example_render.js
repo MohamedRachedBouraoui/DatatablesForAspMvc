@@ -19,7 +19,7 @@
 
                 
                 //Edit Column: must be setup before datatable creation to catch the draw event
-            _jQueryTable.on('draw.dt', function () { DtEditCmd.setEditCmd(dtModel, _jQueryTable, rawTableName); });
+            _jQueryTable.on('draw.dt', function () { DtEditCmd.setEditCmd(dtModel, _jQueryTable); });
                 
 
                 

@@ -2,7 +2,7 @@
    
     const TD_ROW_INDEX_DATA = 'row-index';
 
-    function setEditCmd(dtModel, _jQueryTable, rawTableName) {
+    function setEditCmd(dtModel, _jQueryTable) {
 
         _jQueryTable.off('click', '.dt-edit-command');
 
@@ -11,9 +11,9 @@
 
             if (dtModel.FetchEditViewFromServerSide === true) {
                 DtLogger.log('FetchEditViewFromServerSide...');
-                handleEditRowCmdFromServer(dtModel, editBtn, rawTableName, _jQueryTable);
+                handleEditRowCmdFromServer(dtModel, editBtn,  _jQueryTable);
             } else {
-                handleEditRowCmd(dtModel, editBtn, rawTableName, _jQueryTable);
+                handleEditRowCmd(dtModel, editBtn,  _jQueryTable);
             }
         });
 
@@ -26,35 +26,35 @@
     }
 
     // Server-Side
-    function handleEditRowCmdFromServer(dtModel, editBtn, rawTableName, _jQueryTable) {
+    function handleEditRowCmdFromServer(dtModel, editBtn,  _jQueryTable) {
         //getGuid
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
         let dt_api = DtApi.getInstance(_jQueryTable);
         let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
 
-        let currentRowUid = editBtn.data(DtUid.getInstance(_jQueryTable).TD_UID_DATA);
+        let currentRowUid = editBtn.data(DtUid.TD_UID_DATA);
         if (currentRowUid == undefined) {
-            rowOldData[DtUid.getInstance(_jQueryTable).TD_UID_PROP] = DtUid.getInstance(_jQueryTable).setRowUid(rowOldData);
+            rowOldData[DtUid.TD_UID_PROP] = DtUid.getInstance(_jQueryTable).setRowUid(rowOldData);
         }
 
         DtAjaxHelper.fetchView(dtModel.FetchEditViewFromUrl, rowOldData, function (html) {
-            displayHtmlInModalAndHandleFormSubmit(html, dtModel, _jQueryTable, rowIndex, rowOldData[DtUid.getInstance(_jQueryTable).TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
+            displayHtmlInModalAndHandleFormSubmit(html, dtModel, _jQueryTable, rowIndex, rowOldData[DtUid.TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
 
         });
     }
 
 
     // Client side
-    function handleEditRowCmd(dtModel, editBtn, rawTableName, _jQueryTable) {
+    function handleEditRowCmd(dtModel, editBtn,  _jQueryTable) {
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
         let dt_api = DtApi.getInstance(_jQueryTable);
         let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
 
-        let currentRowUud = editBtn.data(DtUid.getInstance(_jQueryTable).TD_UID_DATA);
+        let currentRowUud = editBtn.data(DtUid.TD_UID_DATA);
         if (currentRowUud == undefined) {
-            rowOldData[DtUid.getInstance(_jQueryTable).TD_UID_PROP] = DtUid.getInstance(_jQueryTable).setRowUid(rowOldData);
+            rowOldData[DtUid.TD_UID_PROP] = DtUid.getInstance(_jQueryTable).setRowUid(rowOldData);
         }
         let html = buildHtmlForEdition(rowOldData, _jQueryTable);
 
@@ -66,7 +66,7 @@
         let dtTable = _jQueryTable.DataTable();
         let all_columns = dtTable.settings().init().columns;
 
-        let inputs = [`<input type="hidden" name="${DtUid.getInstance(_jQueryTable).TD_UID_PROP}" value="${rowOldData.td_uid}">`];
+        let inputs = [`<input type="hidden" name="${DtUid.TD_UID_PROP}" value="${rowOldData.td_uid}">`];
 
         for (let i in all_columns) {
             let col_name = all_columns[i].name;
@@ -86,12 +86,10 @@
             if (all_columns[i].type === 'bool') {//For checkboxes
 
                 let isCheck = (rowOldData[col_name]).toString() == 'true' ? 'checked="checked"' : '';
-                //col-title
                 
                 let colHeader = $($(col.header()).html()).find('[data-col-title]').data('col-title');
                 colHeader = colHeader || $(col.header()).html();
 
-                //TODO: problème après modification
                 inputs.push(` <div class="form-check mb-3">
     <input type="hidden" name="${col_name}" value="false">
     <input type="checkbox" class="form-check-input" name="${col_name}" id="${col_name}"  ${isCheck} value='true'>
@@ -152,20 +150,10 @@
         }, modalSize);
     }
 
-    //function setRowUid(rowOldData) {
-    //    rowsUidDic[rowUid.toString()] = rowOldData;
-    //    return rowUid++;
-    //}
-
-    //function getOldRowDataByRowUid(rowUid) {
-    //    let olddata = rowsUidDic[rowUid];
-    //    return olddata;
-    //}
-
     function handleCancelEditRowCmd(editBtn, _jQueryTable) {
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
-        let currentRowUud = editBtn.data(DtUid.getInstance(_jQueryTable).TD_UID_DATA);
+        let currentRowUud = editBtn.data(DtUid.TD_UID_DATA);
         let oldRowData = DtUid.getInstance(_jQueryTable). getOldRowDataByRowUid(currentRowUud);
 
         resetRow(_jQueryTable, rowIndex, oldRowData);
