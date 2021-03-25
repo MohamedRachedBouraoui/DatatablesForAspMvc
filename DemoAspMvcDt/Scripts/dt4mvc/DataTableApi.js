@@ -1,4 +1,51 @@
-﻿class DtApi {
+﻿/* Singleton */
+
+//var dtApiFactory = (function () {
+
+//    // Instance stores a reference to the Singleton
+//    var instances;
+
+//    function dtApiInit(jqueryTable) {
+//        // Singleton
+//        // Private methods and variables
+//        function privateMethod() {
+//            console.log("I am private");
+//        }
+//        var jQTableElement = jqueryTable;
+//        var dtApi = jQTableElement.DataTable();
+
+//        var dtColumns = dtApi.settings().init().columns;
+
+//        return {
+//            // Public methods and variables
+//            publicMethod: function () {
+//                console.log("The public can see me!");
+//            },
+//            publicProperty: "I am also public",
+//            getRandomNumber: function () {
+//                return privateRandomNumber;
+//            }
+//        };
+//    };
+//    return {
+//        // Get the Singleton instance if one exists
+//        // or create one if it doesn't
+//        getInstance: function () {
+//            if (!instances) {
+//                instances = dtApiInit();
+//            }
+//            return instances;
+//        }
+//    };
+//})();
+
+//var singleA = dtApiFactory.getInstance();
+//var singleB = dtApiFactory.getInstance();
+//singleA.publicMethod();
+//console.log(singleA.publicProperty);
+//console.log(singleA.getRandomNumber() === singleB.getRandomNumber());
+
+class DtApi {
 
     constructor(tableId) {
         this.tableId = tableId;

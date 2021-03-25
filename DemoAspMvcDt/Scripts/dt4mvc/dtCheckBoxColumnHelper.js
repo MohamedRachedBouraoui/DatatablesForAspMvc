@@ -2,7 +2,7 @@
     const DT_CHECKBOX_COLUMN_CHANGED_EVENT = 'dt.checkbox.column.changed';
 
     function render(d, t, row, meta, colId) {
-
+        console.log('DtCheckBoxColumnHelper.render');
         if (row[colId].toString() == 'true') {
             return `<input type="checkbox" class='dt_checkbox_col_${colId} dt_checkbox_col' checked value="true" data-row-index='${meta.row}'>`;
         }
@@ -87,6 +87,10 @@
 
     function setupRows(_jQueryTable) {
 
+        
+
+
+        //On col-checkbox change
         $('.dt_checkbox_col').change(function () {
 
             let jqueryThis = $(this);
@@ -108,7 +112,7 @@
                     let _class = _classArray[i];
                     let _checkBoxId = _class.replace('dt_checkbox_col_', '');
                     rowdata[_checkBoxId] = jqueryThis.is(':checked');//upate data value
-
+                    rowdata.isDirty = true;
                     let totalSelected = calculateTotalSelected(rows, _checkBoxId);
 
                     let _classHeader = $('.' + _class.replace('dt_checkbox_col_', 'dt_checkbox_all_'));
@@ -119,10 +123,41 @@
         });
     }
 
+    function setupRowsForNewValues(_jQueryTable) {
+        // default status
+        $('.dt_checkbox_col').each(function () {
+
+            let jqueryThis = $(this);
+
+            let dt = _jQueryTable.DataTable();
+
+            let rowIndex = jqueryThis.data('row-index');
+            let rowdata = dt.row(rowIndex).data();
+
+            let classes = this.className;
+            let _classArray = classes.split(' ');
+
+            for (var i = 0; i < _classArray.length; i++) {
+
+                if (_classArray[i].startsWith('dt_checkbox_col_') === true) {
+                    let _class = _classArray[i];
+                    let _checkBoxId = _class.replace('dt_checkbox_col_', '');
+                    let isChecked = rowdata[_checkBoxId].toString() === 'true';
+                    jqueryThis.prop('checked', isChecked);
+                    break;
+                }
+            }
+        });
+    }
+
     function setupCheckboxColumns(_jQueryTable) {
 
         setupHeaders(_jQueryTable);
         setupRows(_jQueryTable);
+
+        _jQueryTable.on('draw.dt', function () {
+            setupRowsForNewValues(_jQueryTable);
+        });
     }
 
     return {
