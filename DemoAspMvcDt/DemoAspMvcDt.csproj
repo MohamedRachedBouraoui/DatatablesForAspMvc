@@ -240,6 +240,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\DataTableConfig.js" />
     <Content Include="Scripts\dt4mvc\dtCheckBoxColumnHelper.js" />
+    <Content Include="Scripts\dt4mvc\dtLogger.js" />
     <Content Include="Scripts\dt4mvc\dtModalHelper.js" />
     <Content Include="Scripts\dt4mvc\dtAjaxHelper.js" />
     <Content Include="Scripts\dt4mvc\DataTableApi.js" />
@@ -405,11 +406,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\_MesDemos.cshtml" />
     <Content Include="Views\Shared\Ajax.cshtml" />
-    <Content Include="Views\Shared\Render.cshtml" />
-    <Content Include="Views\Shared\Select.cshtml" />
-    <Content Include="Views\Shared\ServerSide.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper.js.flow" />

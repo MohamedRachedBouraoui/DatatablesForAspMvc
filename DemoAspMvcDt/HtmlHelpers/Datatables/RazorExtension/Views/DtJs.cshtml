@@ -64,7 +64,7 @@
                 @if(Model.DoCreateDtApiInstance) {
                     <text>
                     // will be a global variable
-                    @Model.DtApiInstanceName = new DtApi(rawTableName);
+                    @Model.DtApiInstanceName = DtApi.getInstance(_jQueryTable);
                     </text>
                 }
 

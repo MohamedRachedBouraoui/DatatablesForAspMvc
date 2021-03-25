@@ -15,7 +15,7 @@
             let editBtn = $(e.target);
 
             if (dtModel.FetchEditViewFromServerSide === true) {
-                console.log('FetchEditViewFromServerSide...');
+                DtLogger.log('FetchEditViewFromServerSide...');
                 handleEditRowCmdFromServer(dtModel, editBtn, rawTableName, _jQueryTable);
             } else {
                 handleEditRowCmd(dtModel, editBtn, rawTableName, _jQueryTable);
@@ -25,7 +25,7 @@
         _jQueryTable.off('click', '.dt-cancel-edit-command ');
         _jQueryTable.on('click', '.dt-cancel-edit-command ', function (e) {
             let editBtn = $(e.target);
-            handleCancelEditRowCmd(editBtn, rawTableName);
+            handleCancelEditRowCmd(editBtn, _jQueryTable);
             return false;
         });
     }
@@ -35,7 +35,7 @@
         //getGuid
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
-        let dt_api = new DtApi(rawTableName);
+        let dt_api = DtApi.getInstance(_jQueryTable);
         let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
 
         let currentRowUid = editBtn.data(TD_UID_DATA);
@@ -44,7 +44,7 @@
         }
 
         DtAjaxHelper.fetchView(dtModel.FetchEditViewFromUrl, rowOldData, function (html) {
-            displayHtmlInModalAndHandleFormSubmit(html, dtModel, rawTableName, rowIndex, rowOldData[TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
+            displayHtmlInModalAndHandleFormSubmit(html, dtModel, _jQueryTable, rowIndex, rowOldData[TD_UID_PROP], DtModalHelper.DT_MODAL_SIZE_XL);
 
         });
     }
@@ -54,7 +54,7 @@
     function handleEditRowCmd(dtModel, editBtn, rawTableName, _jQueryTable) {
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
-        let dt_api = new DtApi(rawTableName);
+        let dt_api = DtApi.getInstance(_jQueryTable);
         let rowOldData = dt_api.recupereLigneParIndex(rowIndex).recupereDonneesLigne();
 
         let currentRowUud = editBtn.data(TD_UID_DATA);
@@ -63,7 +63,7 @@
         }
         let html = buildHtmlForEdition(rowOldData, _jQueryTable);
 
-        displayHtmlInModalAndHandleFormSubmit(html, dtModel, rawTableName, rowIndex);
+        displayHtmlInModalAndHandleFormSubmit(html, dtModel, _jQueryTable, rowIndex);
     }
 
     function buildHtmlForEdition(rowOldData, _jQueryTable) {
@@ -116,7 +116,7 @@
     }
 
     //Shared between server & client sides
-    function displayHtmlInModalAndHandleFormSubmit(html, dtModel, rawTableName, rowIndex, rowOldDataUid, modalSize) {
+    function displayHtmlInModalAndHandleFormSubmit(html, dtModel, _jQueryTable, rowIndex, rowOldDataUid, modalSize) {
 
 
         html = `<form class="dt-edit-form">${html}</form>`;
@@ -150,7 +150,7 @@
                 // At this level, our form is validated in the client side and/or the server side
                 let formData = DtFormHelper.getFormData(form);
                 debugger;
-                updateRow(rawTableName, rowIndex, formData);
+                updateRow(_jQueryTable, rowIndex, formData);
                 DtModalHelper.hide();
             }
 
@@ -167,22 +167,22 @@
         return olddata;
     }
 
-    function handleCancelEditRowCmd(editBtn, rawTableName) {
+    function handleCancelEditRowCmd(editBtn, _jQueryTable) {
 
         let rowIndex = editBtn.data(TD_ROW_INDEX_DATA);
         let currentRowUud = editBtn.data(TD_UID_DATA);
         let oldRowData = getOldRowDataByRowUid(currentRowUud);
 
-        resetRow(rawTableName, rowIndex, oldRowData);
+        resetRow(_jQueryTable, rowIndex, oldRowData);
     }
 
-    function updateRow(rawTableName, rowIndex, values) {
-        let dt_api = new DtApi(rawTableName);
+    function updateRow(_jQueryTable, rowIndex, values) {
+        let dt_api = DtApi.getInstance(_jQueryTable);
         dt_api.recupereLigneParIndex(rowIndex).modifierLigne(values);
     }
 
-    function resetRow(rawTableName, rowIndex, oldRowData) {
-        let dt_api = new DtApi(rawTableName);
+    function resetRow(_jQueryTable, rowIndex, oldRowData) {
+        let dt_api = DtApi.getInstance(_jQueryTable);
         dt_api.recupereLigneParIndex(rowIndex).reinitLigne(oldRowData);
     }
 

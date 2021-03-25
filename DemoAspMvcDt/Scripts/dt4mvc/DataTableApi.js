@@ -1,454 +1,455 @@
 ﻿/* Singleton */
 
-//var dtApiFactory = (function () {
+var DtApi = (function () {
 
-//    // Instance stores a reference to the Singleton
-//    var instances;
+    // Instance stores a reference to the Singleton
+    var instances = {};
 
-//    function dtApiInit(jqueryTable) {
-//        // Singleton
-//        // Private methods and variables
-//        function privateMethod() {
-//            console.log("I am private");
-//        }
-//        var jQTableElement = jqueryTable;
-//        var dtApi = jQTableElement.DataTable();
+    function dtApiInit(jqueryTable) {
+        
+        // Private variables
+       
+        var jQTableElement = jqueryTable;
+        var dtApi = jQTableElement.DataTable();
 
-//        var dtColumns = dtApi.settings().init().columns;
+        var dtColumns = dtApi.settings().init().columns;
 
-//        return {
-//            // Public methods and variables
-//            publicMethod: function () {
-//                console.log("The public can see me!");
-//            },
-//            publicProperty: "I am also public",
-//            getRandomNumber: function () {
-//                return privateRandomNumber;
-//            }
-//        };
-//    };
-//    return {
-//        // Get the Singleton instance if one exists
-//        // or create one if it doesn't
-//        getInstance: function () {
-//            if (!instances) {
-//                instances = dtApiInit();
-//            }
-//            return instances;
-//        }
-//    };
-//})();
+        // Private methods
+        function dispatchRowAddingEvent(row) {
 
-//var singleA = dtApiFactory.getInstance();
-//var singleB = dtApiFactory.getInstance();
-//singleA.publicMethod();
-//console.log(singleA.publicProperty);
-//console.log(singleA.getRandomNumber() === singleB.getRandomNumber());
+            var event = jQuery.Event("new_row_adding.dt");
+            event.dt_newRow = row;
+            event.dt_context = dtApi;
 
-class DtApi {
+            jQTableElement.trigger(event);
 
-    constructor(tableId) {
-        this.tableId = tableId;
-        this.jQTableElement = $("#" + tableId);
-        this.dtApi = this.jQTableElement.DataTable();
+            return !event.isDefaultPrevented();
+        }
+        function dispatchRowAddedEvent(row) {
 
-        this.dtColumns = this.dtApi.settings().init().columns;
-    }
+            var event = jQuery.Event("new_row_added.dt");
+            event.dt_newRow = row;
+            event.dt_newRowIndex = dtApi.rows[0];
+            event.dt_context = dtApi;
 
-    dispatchRowAddingEvent(row) {
+            jQTableElement.trigger(event);
+        }
+        function dispatchRowRemovedEvent() {
 
-        var event = jQuery.Event("new_row_adding.dt");
-        event.dt_newRow = row;
-        event.dt_context = this.dtApi;
+            var event = jQuery.Event("row_removed.dt");
+            event.dt_rowIndex = ligneSelectionneeIndex;
+            event.dt_rowData = donneesLigneSelectionnee;
+            event.dt_context = dtApi;
 
-        this.jQTableElement.trigger(event);
+            jQTableElement.trigger(event);
+        }
+        function dispatchRowRemovingEvent() {
 
-        return !event.isDefaultPrevented();
-    }
-    dispatchRowAddedEvent(row) {
+            var event = jQuery.Event("row_removing.dt");
+            event.dt_rowIndex = ligneSelectionneeIndex;
+            event.dt_rowData = ligneSelectionnee.data();
+            event.dt_context = dtApi;
 
-        var event = jQuery.Event("new_row_added.dt");
-        event.dt_newRow = row;
-        event.dt_newRowIndex = this.dtApi.rows[0];
-        event.dt_context = this.dtApi;
+            jQTableElement.trigger(event);
 
-        this.jQTableElement.trigger(event);
-    }
-    dispatchRowRemovedEvent() {
+            return !event.isDefaultPrevented();
+        }
+        function dispatchRowUpdatingEvent(rowNewdata) {
 
-        var event = jQuery.Event("row_removed.dt");
-        event.dt_rowIndex = this.ligneSelectionneeIndex;
-        event.dt_rowData = this.donneesLigneSelectionnee;
-        event.dt_context = this.dtApi;
+            var event = jQuery.Event("row_updating.dt");
+            event.dt_rowIndex = ligneSelectionneeIndex;
+            event.dt_rowOldData = ligneSelectionnee.data();
+            event.dt_rowNewdata = rowNewdata;
+            event.dt_context = dtApi;
 
-        this.jQTableElement.trigger(event);
-    }
-    dispatchRowRemovingEvent() {
+            jQTableElement.trigger(event);
 
-        var event = jQuery.Event("row_removing.dt");
-        event.dt_rowIndex = this.ligneSelectionneeIndex;
-        event.dt_rowData = this.ligneSelectionnee.data();
-        event.dt_context = this.dtApi;
+            return !event.isDefaultPrevented();
+        }
+        function dispatchRowUpdatedEvent(rowNewdata) {
 
-        this.jQTableElement.trigger(event);
+            var event = jQuery.Event("row_updated.dt");
+            event.dt_rowIndex = ligneSelectionneeIndex;
+            event.dt_rowOldData = ligneSelectionnee.data();
+            event.dt_rowNewdata = rowNewdata;
+            event.dt_context = dtApi;
 
-        return !event.isDefaultPrevented();
-    }
-    dispatchRowUpdatingEvent(rowNewdata) {
-
-        var event = jQuery.Event("row_updating.dt");
-        event.dt_rowIndex = this.ligneSelectionneeIndex;
-        event.dt_rowOldData = this.ligneSelectionnee.data();
-        event.dt_rowNewdata = rowNewdata;
-        event.dt_context = this.dtApi;
-
-        this.jQTableElement.trigger(event);
-
-        return !event.isDefaultPrevented();
-    }
-    dispatchRowUpdatedEvent(rowNewdata) {
-
-        var event = jQuery.Event("row_updated.dt");
-        event.dt_rowIndex = this.ligneSelectionneeIndex;
-        event.dt_rowOldData = this.ligneSelectionnee.data();
-        event.dt_rowNewdata = rowNewdata;
-        event.dt_context = this.dtApi;
-
-        this.jQTableElement.trigger(event);
-    }
-
-    verifierSiDataTableInitialisee() {
-        return $.fn.DataTable.isDataTable("#" + this.tableId);
-    }
-
-    viderTable() {
-        this.dtApi.clear().draw();
-        this.resetLigne();
-    }
-
-    recupererNouvellesDonneesParAjax() {
-        this.dtApi.ajax.reload();
-        this.resetLigne();
-    }
-
-    resetLigne() {
-        this.ligneSelectionneeIndex = null;
-        this.ligneSelectionnee = null;
-        this.lignesSelectionnees = null;
-        this.donneesLigneSelectionnee = null;
-    }
-
-    ajouterLigne(ligne) {
-        if (ligne === undefined || ligne === null) {
-            throw 'Il faut fournir les données pour la nouvelle ligne.';
+            jQTableElement.trigger(event);
         }
 
-        let dateFormat = this.jQTableElement.attr('default_date_time_format');
-        DtDatesHelper.dtConvertDates(ligne, dateFormat );
+        function verifierSiDataTableInitialisee() {
+            return $.fn.DataTable.isDataTable("#" + tableId);
+        }
 
-        if (this.dispatchRowAddingEvent(ligne) === false) {
+        function viderTable() {
+            dtApi.clear().draw();
+            resetLigne();
+        }
+
+        function recupererNouvellesDonneesParAjax() {
+            dtApi.ajax.reload();
+            resetLigne();
+        }
+
+        function resetLigne() {
+            ligneSelectionneeIndex = null;
+            ligneSelectionnee = null;
+            lignesSelectionnees = null;
+            donneesLigneSelectionnee = null;
+        }
+
+        function ajouterLigne(ligne) {
+            if (ligne === undefined || ligne === null) {
+                throw 'Il faut fournir les données pour la nouvelle ligne.';
+            }
+
+            let dateFormat = jQTableElement.attr('default_date_time_format');
+            DtDatesHelper.dtConvertDates(ligne, dateFormat);
+
+            if (dispatchRowAddingEvent(ligne) === false) {
+                return this;
+            }
+
+            ligne.isDirty = true;
+
+            dtApi.row.add(ligne).draw(true);
+
+            dispatchRowAddedEvent(ligne);
             return this;
         }
 
-        ligne.isDirty = true;
+        function recupereLigneParIndex(index) {
+            if (index === undefined || index === null || index === NaN) {
+                throw 'Il faut fournir un index valide.';
+            }
 
-        this.dtApi.row.add(ligne).draw(true);
-
-        this.dispatchRowAddedEvent(ligne);
-        return this;
-    }
-
-    recupereLigneParIndex(index) {
-        if (index === undefined || index === null || index === NaN) {
-            throw 'Il faut fournir un index valide.';
-        }
-
-        this.ligneSelectionnee = this.dtApi.row(index);
-        this.donneesLigneSelectionnee = this.ligneSelectionnee.data();
-        this.ligneSelectionneeIndex = index;
-        return this;
-    }
-
-    recupereDonneesLigne() {
-        if (this.ligneSelectionnee === undefined || this.ligneSelectionnee === null) {
-            throw 'Il faut sélectionner une ligne d\'abord.';
-        }
-
-        return this.ligneSelectionnee.data();
-    }
-
-    recupereIndexLigne() {
-        if (this.ligneSelectionnee === undefined || this.ligneSelectionnee === null) {
-            throw 'Il faut sélectionner une ligne d\'abord.';
-        }
-        return this.ligneSelectionneeIndex;
-    }
-
-    supprimerLigne() {
-        if (this.ligneSelectionnee === undefined || this.ligneSelectionnee === null) {
-            throw 'Il faut sélectionner une ligne d\'abord.';
-        }
-        if (this.dispatchRowRemovingEvent() === false) {
+            ligneSelectionnee = dtApi.row(index);
+            donneesLigneSelectionnee = ligneSelectionnee.data();
+            ligneSelectionneeIndex = index;
             return this;
         }
 
-        this.ligneSelectionnee.remove().draw(false).rows().invalidate().rows().deselect();
+        function recupereDonneesLigne() {
+            if (ligneSelectionnee === undefined || ligneSelectionnee === null) {
+                throw 'Il faut sélectionner une ligne d\'abord.';
+            }
 
-        this.dispatchRowRemovedEvent();
-        this.resetLigne();
-
-        return this;
-    }
-
-
-    modifierLigne(nouvellesDonnees) {
-
-        if (this.ligneSelectionnee === undefined || this.ligneSelectionnee === null) {
-            throw 'Il faut sélectionner une ligne d\'abord.';
-        }
-        if (nouvellesDonnees === undefined || nouvellesDonnees === null) {
-            throw 'Il faut fournir des données valides pour modifier la ligne.';
+            return ligneSelectionnee.data();
         }
 
-        let dateFormat = this.jQTableElement.attr('default_date_time_format');        
-        DtDatesHelper.dtConvertDates(nouvellesDonnees, dateFormat);
+        function recupereIndexLigne() {
+            if (ligneSelectionnee === undefined || ligneSelectionnee === null) {
+                throw 'Il faut sélectionner une ligne d\'abord.';
+            }
+            return ligneSelectionneeIndex;
+        }
 
-        this.mettreAAjourCellulesModifiees(nouvellesDonnees);
+        function supprimerLigne() {
+            if (ligneSelectionnee === undefined || ligneSelectionnee === null) {
+                throw 'Il faut sélectionner une ligne d\'abord.';
+            }
+            if (dispatchRowRemovingEvent() === false) {
+                return this;
+            }
 
-        if (this.dispatchRowUpdatingEvent(nouvellesDonnees) === false) {
+            ligneSelectionnee.remove().draw(false).rows().invalidate().rows().deselect();
+
+            dispatchRowRemovedEvent();
+            resetLigne();
+
             return this;
         }
-        this.ligneSelectionnee.data(nouvellesDonnees);
 
-        this.dispatchRowUpdatedEvent(nouvellesDonnees)
 
-        this.resetLigne();
+        function modifierLigne(nouvellesDonnees) {
 
-       // this.dtApi.draw(false).rows().invalidate();
-        return this;
-    }
+            if (ligneSelectionnee === undefined || ligneSelectionnee === null) {
+                throw 'Il faut sélectionner une ligne d\'abord.';
+            }
+            if (nouvellesDonnees === undefined || nouvellesDonnees === null) {
+                throw 'Il faut fournir des données valides pour modifier la ligne.';
+            }
 
-    reinitLigne(anciennesDonnees) {
+            let dateFormat = jQTableElement.attr('default_date_time_format');
+            DtDatesHelper.dtConvertDates(nouvellesDonnees, dateFormat);
 
-        if (this.ligneSelectionnee === undefined || this.ligneSelectionnee === null) {
-            throw 'Il faut sélectionner une ligne d\'abord.';
-        }
-        if (anciennesDonnees === undefined || anciennesDonnees === null) {
-            throw 'Il faut fournir des données valides pour reinitialiser la ligne.';
-        }
+            mettreAAjourCellulesModifiees(nouvellesDonnees);
 
-        let dateFormat = this.jQTableElement.attr('default_date_time_format');        
-        DtDatesHelper.dtConvertDates(anciennesDonnees, dateFormat);
+            if (dispatchRowUpdatingEvent(nouvellesDonnees) === false) {
+                return this;
+            }
+            ligneSelectionnee.data(nouvellesDonnees);
 
-        this.reinitCellulesModifiees(anciennesDonnees);
+            dispatchRowUpdatedEvent(nouvellesDonnees)
 
-        if (this.dispatchRowUpdatingEvent(anciennesDonnees) === false) {
+            resetLigne();
+
+            // dtApi.draw(false).rows().invalidate();
             return this;
         }
-        this.ligneSelectionnee.data(anciennesDonnees);
 
-        this.dispatchRowUpdatedEvent(anciennesDonnees)
+        function reinitLigne(anciennesDonnees) {
 
-        this.resetLigne();
+            if (ligneSelectionnee === undefined || ligneSelectionnee === null) {
+                throw 'Il faut sélectionner une ligne d\'abord.';
+            }
+            if (anciennesDonnees === undefined || anciennesDonnees === null) {
+                throw 'Il faut fournir des données valides pour reinitialiser la ligne.';
+            }
 
-       // this.dtApi.draw(false).rows().invalidate();
-        return this;
-    }
+            let dateFormat = jQTableElement.attr('default_date_time_format');
+            DtDatesHelper.dtConvertDates(anciennesDonnees, dateFormat);
 
-    mettreAAjourCellulesModifiees(nouvellesDonnees) {
+            reinitCellulesModifiees(anciennesDonnees);
+
+            if (dispatchRowUpdatingEvent(anciennesDonnees) === false) {
+                return this;
+            }
+            ligneSelectionnee.data(anciennesDonnees);
+
+            dispatchRowUpdatedEvent(anciennesDonnees)
+
+            resetLigne();
+
+            // dtApi.draw(false).rows().invalidate();
+            return this;
+        }
+
+        function mettreAAjourCellulesModifiees(nouvellesDonnees) {
 
 
-        for (var i = 0; i < this.dtColumns.length; i++) {
-            let cName = this.dtColumns[i].name;
-            let cIndex = this.dtApi.column(cName + ':name').index();
+            for (var i = 0; i < dtColumns.length; i++) {
+                let cName = dtColumns[i].name;
+                let cIndex = dtApi.column(cName + ':name').index();
 
-            if (nouvellesDonnees[cName] !== undefined
-                && this.donneesLigneSelectionnee[cName] !== undefined
-                && (nouvellesDonnees[cName]).toString() != (this.donneesLigneSelectionnee[cName]).toString()) {//la valeurà changé
+                if (nouvellesDonnees[cName] !== undefined
+                    && donneesLigneSelectionnee[cName] !== undefined
+                    && (nouvellesDonnees[cName]).toString() != (donneesLigneSelectionnee[cName]).toString()) {//la valeurà changé
 
-                var cell = this.dtApi.cells(this.ligneSelectionneeIndex, cIndex); // cell ayant une nouvelle valeur
-                $(cell.nodes()).addClass('dt-dirty');
+                    var cell = dtApi.cells(ligneSelectionneeIndex, cIndex); // cell ayant une nouvelle valeur
+                    $(cell.nodes()).addClass('dt-dirty');
 
-                nouvellesDonnees.isDirty = true;
+                    nouvellesDonnees.isDirty = true;
+                }
             }
         }
-    }
 
-    reinitCellulesModifiees(anciennesDonnees) {
+        function reinitCellulesModifiees(anciennesDonnees) {
 
 
-        for (var i = 0; i < this.dtColumns.length; i++) {
-            let cName = this.dtColumns[i].name;
-            let cIndex = this.dtApi.column(cName + ':name').index();
+            for (var i = 0; i < dtColumns.length; i++) {
+                let cName = dtColumns[i].name;
+                let cIndex = dtApi.column(cName + ':name').index();
 
-            if (anciennesDonnees[cName] !== undefined
-                && this.donneesLigneSelectionnee[cName] !== undefined) {
+                if (anciennesDonnees[cName] !== undefined
+                    && donneesLigneSelectionnee[cName] !== undefined) {
 
-                var cell = this.dtApi.cells(this.ligneSelectionneeIndex, cIndex);
-                $(cell.nodes()).removeClass('dt-dirty');
+                    var cell = dtApi.cells(ligneSelectionneeIndex, cIndex);
+                    $(cell.nodes()).removeClass('dt-dirty');
 
-                anciennesDonnees.isDirty = undefined;
+                    anciennesDonnees.isDirty = undefined;
+                }
             }
         }
-    }
 
-    recupereLignesSelectionnees() {
+        function recupereLignesSelectionnees() {
 
-        this.lignesSelectionnees = this.dtApi.rows({ selected: true });
-        return this;
-    }
-
-    supprimerLignes() {
-        if (this.lignesSelectionnees === undefined || this.lignesSelectionnees === null) {
-            throw 'Il faut sélectionner une ou plusieurs lignes d\'abord.';
-        }
-        //if (this.dispatchRowRemovingEvent() === false) {
-        //    return this;
-        //}
-
-        this.lignesSelectionnees.remove().draw(false).rows().invalidate().rows().deselect();
-
-        this.dispatchRowRemovedEvent();
-        this.resetLigne();
-
-        return this;
-    }
-
-    recupererToutesDonnees() {
-
-        return this.dtApi.rows().data().toArray();
-    }
-
-    recupererValeursSelonNomColonne(nomColonne) {
-        if (nomColonne === undefined || nomColonne === null) {
-            throw 'Il faut préciser le nom de la colonne.'
-        }
-        return this.dtApi.column(nomColonne + ':name').data().toArray();
-    }
-
-    recupererValeursDeColonneSelonCritere(nomColonne, critere) {
-        if (nomColonne === undefined || nomColonne === null) {
-            throw 'Il faut préciser le nom de la colonne.'
+            lignesSelectionnees = dtApi.rows({ selected: true });
+            return this;
         }
 
-        if (critere === undefined || critere === null) {
-            throw 'Il faut préciser le critère de recherche.'
-        }
-
-        let resultat = [];
-
-        this.dtApi.rows(function (idx, data, node) {
-            if (data[critere.critere] === critere.valeur) {
-                resultat.push(data[nomColonne]);
+        function supprimerLignes() {
+            if (lignesSelectionnees === undefined || lignesSelectionnees === null) {
+                throw 'Il faut sélectionner une ou plusieurs lignes d\'abord.';
             }
-            return false;
-        });
+            //if (dispatchRowRemovingEvent() === false) {
+            //    return this;
+            //}
 
+            lignesSelectionnees.remove().draw(false).rows().invalidate().rows().deselect();
 
-        //let donneesLignes = this.dtApi.rows().data().toArray();
-        //for (var i = 0; i < donneesLignes.length; i++) {
-        //    if (donneesLignes[i][critere.critere] === critere.valeur) {
-        //        resultat.push(donneesLignes[i][nomColonne]);
-        //    }
-        //}
-        return resultat;
-    }
+            dispatchRowRemovedEvent();
+            resetLigne();
 
-    ajouterClassAuCellule(_class, nomColonne, indexLigne) {
-        if (_class === undefined || _class === null) {
-            throw 'Il faut préciser le nom de la classe CSS.'
+            return this;
         }
 
-        if (nomColonne === undefined || nomColonne === null) {
-            throw 'Il faut préciser le nom de la colonne.'
+        function recupererToutesDonnees() {
+
+            return dtApi.rows().data().toArray();
         }
 
-        if (indexLigne === undefined || indexLigne === null) {
-            throw 'Il faut préciser l\'indexe de ligne.'
-        }
-
-        let cIndex = this.dtApi.column(nomColonne + ':name').index();
-        var cell = this.dtApi.cells(indexLigne, cIndex);
-        $(cell.nodes()).addClass(_class);
-    }
-
-    enleverClassDuCellule(_class, nomColonne, indexLigne) {
-        if (_class === undefined || _class === null) {
-            throw 'Il faut préciser le nom de la classe CSS.'
-        }
-
-        if (nomColonne === undefined || nomColonne === null) {
-            throw 'Il faut préciser le nom de la colonne.'
-        }
-
-        if (indexLigne === undefined || indexLigne === null) {
-            throw 'Il faut préciser l\'indexe de ligne.'
-        }
-
-        let cIndex = this.dtApi.column(nomColonne + ':name').index();
-        var cell = this.dtApi.cells(indexLigne, cIndex);
-        $(cell.nodes()).removeClass(_class);
-    }
-
-    recupererIndexesLignesSelonCritere(critere) {
-        if (critere === undefined || critere === null) {
-            throw 'Il faut préciser le critère de recherche.'
-        }
-
-        var rowIndexes = [];
-        this.dtApi.rows(function (idx, data, node) {
-            if (data[critere.critere] === critere.valeur) {
-                rowIndexes.push(idx);
+        function recupererValeursSelonNomColonne(nomColonne) {
+            if (nomColonne === undefined || nomColonne === null) {
+                throw 'Il faut préciser le nom de la colonne.'
             }
-            return false;
-        });
-        return rowIndexes;
-    }
-
-    SupprimerLignesSelonCritere(critere) {
-        if (critere === undefined || critere === null) {
-            throw 'Il faut préciser le critère de recherche.'
+            return dtApi.column(nomColonne + ':name').data().toArray();
         }
 
-        var rowIndexes = this.recupererIndexesLignesSelonCritere(critere);
-        if (rowIndexes.length === 0) {
-            return false;
+        function recupererValeursDeColonneSelonCritere(nomColonne, critere) {
+            if (nomColonne === undefined || nomColonne === null) {
+                throw 'Il faut préciser le nom de la colonne.'
+            }
+
+            if (critere === undefined || critere === null) {
+                throw 'Il faut préciser le critère de recherche.'
+            }
+
+            let resultat = [];
+
+            dtApi.rows(function (idx, data, node) {
+                if (data[critere.critere] === critere.valeur) {
+                    resultat.push(data[nomColonne]);
+                }
+                return false;
+            });
+
+
+            //let donneesLignes = dtApi.rows().data().toArray();
+            //for (var i = 0; i < donneesLignes.length; i++) {
+            //    if (donneesLignes[i][critere.critere] === critere.valeur) {
+            //        resultat.push(donneesLignes[i][nomColonne]);
+            //    }
+            //}
+            return resultat;
         }
 
-        for (var i = rowIndexes.length - 1; i >= 0; i--) {
-            this.ligneSelectionnee = this.dtApi.row(rowIndexes[i]);
-            this.ligneSelectionneeIndex = rowIndexes[i];
-            this.supprimerLigne();
-        }
-        return true;
-    }
+        function ajouterClassAuCellule(_class, nomColonne, indexLigne) {
+            if (_class === undefined || _class === null) {
+                throw 'Il faut préciser le nom de la classe CSS.'
+            }
 
-    modifierLignesSelonCritere(critereDeRecherche, nouvelleValeurAPrendre) {
-        //{ critere: 'IdPoste', valeur: arg.idPosteInactive }, { critere: 'DateFin', nouvelleValeur: arg.dateFin }
-        if (critereDeRecherche === undefined || critereDeRecherche === null) {
-            throw 'Il faut préciser le critère de recherche.'
-        }
-        if (nouvelleValeurAPrendre === undefined || nouvelleValeurAPrendre === null) {
-            throw 'Il faut préciser la nouvelle valeur.'
-        }
-        var rowIndexes = this.recupererIndexesLignesSelonCritere(critereDeRecherche);
-        if (rowIndexes.length === 0) {
-            return false;
+            if (nomColonne === undefined || nomColonne === null) {
+                throw 'Il faut préciser le nom de la colonne.'
+            }
+
+            if (indexLigne === undefined || indexLigne === null) {
+                throw 'Il faut préciser l\'indexe de ligne.'
+            }
+
+            let cIndex = dtApi.column(nomColonne + ':name').index();
+            var cell = dtApi.cells(indexLigne, cIndex);
+            $(cell.nodes()).addClass(_class);
         }
 
-        for (var i = 0; i < rowIndexes.length; i++) {
-            this.ligneSelectionnee = this.dtApi.row(rowIndexes[i]);
-            this.ligneSelectionneeIndex = rowIndexes[i];
-            this.donneesLigneSelectionnee = this.dtApi.row(rowIndexes[i]).data();// afin de détecter les colonnes ayant reçus les changements
+        function enleverClassDuCellule(_class, nomColonne, indexLigne) {
+            if (_class === undefined || _class === null) {
+                throw 'Il faut préciser le nom de la classe CSS.'
+            }
 
-            let nouvelleDonneeLigne = {};
-            jQuery.extend(true, nouvelleDonneeLigne, this.donneesLigneSelectionnee);//Cloner la ligne avant de la maj avec la "nouvelleValeur"
+            if (nomColonne === undefined || nomColonne === null) {
+                throw 'Il faut préciser le nom de la colonne.'
+            }
 
-            nouvelleDonneeLigne[nouvelleValeurAPrendre.critere] = nouvelleValeurAPrendre.nouvelleValeur; // inserer la nouvelle valeur dans la clone afin d'utiliser la méthode "this.mettreAAjourCellulesModifiees"
+            if (indexLigne === undefined || indexLigne === null) {
+                throw 'Il faut préciser l\'indexe de ligne.'
+            }
 
-            this.modifierLigne(nouvelleDonneeLigne);
+            let cIndex = dtApi.column(nomColonne + ':name').index();
+            var cell = dtApi.cells(indexLigne, cIndex);
+            $(cell.nodes()).removeClass(_class);
         }
 
-        return true;
-    }
-}
+        function recupererIndexesLignesSelonCritere(critere) {
+            if (critere === undefined || critere === null) {
+                throw 'Il faut préciser le critère de recherche.'
+            }
+
+            var rowIndexes = [];
+            dtApi.rows(function (idx, data, node) {
+                if (data[critere.critere] === critere.valeur) {
+                    rowIndexes.push(idx);
+                }
+                return false;
+            });
+            return rowIndexes;
+        }
+
+        function SupprimerLignesSelonCritere(critere) {
+            if (critere === undefined || critere === null) {
+                throw 'Il faut préciser le critère de recherche.'
+            }
+
+            var rowIndexes = recupererIndexesLignesSelonCritere(critere);
+            if (rowIndexes.length === 0) {
+                return false;
+            }
+
+            for (var i = rowIndexes.length - 1; i >= 0; i--) {
+                ligneSelectionnee = dtApi.row(rowIndexes[i]);
+                ligneSelectionneeIndex = rowIndexes[i];
+                supprimerLigne();
+            }
+            return true;
+        }
+
+        function modifierLignesSelonCritere(critereDeRecherche, nouvelleValeurAPrendre) {
+            //{ critere: 'IdPoste', valeur: arg.idPosteInactive }, { critere: 'DateFin', nouvelleValeur: arg.dateFin }
+            if (critereDeRecherche === undefined || critereDeRecherche === null) {
+                throw 'Il faut préciser le critère de recherche.'
+            }
+            if (nouvelleValeurAPrendre === undefined || nouvelleValeurAPrendre === null) {
+                throw 'Il faut préciser la nouvelle valeur.'
+            }
+            var rowIndexes = recupererIndexesLignesSelonCritere(critereDeRecherche);
+            if (rowIndexes.length === 0) {
+                return false;
+            }
+
+            for (var i = 0; i < rowIndexes.length; i++) {
+                ligneSelectionnee = dtApi.row(rowIndexes[i]);
+                ligneSelectionneeIndex = rowIndexes[i];
+                donneesLigneSelectionnee = dtApi.row(rowIndexes[i]).data();// afin de détecter les colonnes ayant reçus les changements
+
+                let nouvelleDonneeLigne = {};
+                jQuery.extend(true, nouvelleDonneeLigne, donneesLigneSelectionnee);//Cloner la ligne avant de la maj avec la "nouvelleValeur"
+
+                nouvelleDonneeLigne[nouvelleValeurAPrendre.critere] = nouvelleValeurAPrendre.nouvelleValeur; // inserer la nouvelle valeur dans la clone afin d'utiliser la méthode "mettreAAjourCellulesModifiees"
+
+                modifierLigne(nouvelleDonneeLigne);
+            }
+
+            return true;
+        }
+
+        return {
+            // Public methods and variables
+            verifierSiDataTableInitialisee,
+            viderTable,
+            recupererNouvellesDonneesParAjax,
+            resetLigne,
+            ajouterLigne,
+            recupereLigneParIndex,
+            recupereDonneesLigne,
+            recupereIndexLigne,
+            supprimerLigne,
+            modifierLigne,
+            reinitLigne,
+           // mettreAAjourCellulesModifiees,
+            //reinitCellulesModifiees,
+            recupereLignesSelectionnees,
+            supprimerLignes,
+            recupererToutesDonnees,
+            recupererValeursSelonNomColonne,
+            recupererValeursDeColonneSelonCritere,
+            ajouterClassAuCellule,
+            enleverClassDuCellule,
+            recupererIndexesLignesSelonCritere,
+            SupprimerLignesSelonCritere,
+            modifierLignesSelonCritere
+        };
+    };
+    return {
+        // Get the Singleton instance if one exists
+        // or create one if it doesn't
+        getInstance: function (jqueryTable) {
+            if (jqueryTable == undefined || jqueryTable == null) {
+                throw 'A Jquery reference to the table is needed.';                
+            }
+            if (!instances[jqueryTable]) {
+                instances[jqueryTable] = dtApiInit(jqueryTable);
+            }
+            return instances[jqueryTable];
+        }
+    };
+})();

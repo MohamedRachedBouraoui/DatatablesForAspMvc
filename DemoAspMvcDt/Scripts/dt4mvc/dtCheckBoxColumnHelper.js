@@ -2,7 +2,7 @@
     const DT_CHECKBOX_COLUMN_CHANGED_EVENT = 'dt.checkbox.column.changed';
 
     function render(d, t, row, meta, colId) {
-        console.log('DtCheckBoxColumnHelper.render');
+        DtLogger.log('DtCheckBoxColumnHelper.render');
         if (row[colId].toString() == 'true') {
             return `<input type="checkbox" class='dt_checkbox_col_${colId} dt_checkbox_col' checked value="true" data-row-index='${meta.row}'>`;
         }

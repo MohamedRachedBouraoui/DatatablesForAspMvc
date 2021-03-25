@@ -157,7 +157,7 @@
                 //Create an instance for the DtApi
                     
                     // will be a global variable
-                    example_render_dt = new DtApi(rawTableName);
+                    example_render_dt = DtApi.getInstance(_jQueryTable);
                     
 
                 // data setup for form-Submit

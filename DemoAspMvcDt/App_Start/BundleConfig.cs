@@ -18,6 +18,7 @@ namespace DemoAspMvcDt
                      "~/Scripts/dt4mvc/vendors/jquery.highlight.js",
                      "~/Scripts/dt4mvc/vendors/dataTables.searchHighlight.min.js",
 
+                     "~/Scripts/dt4mvc/dtLogger.js",
                      "~/Scripts/dt4mvc/dtDatesHelper.js",
                      "~/Scripts/dt4mvc/DataTableApi.js",
                      "~/Scripts/dt4mvc/dtAjaxHelper.js",
